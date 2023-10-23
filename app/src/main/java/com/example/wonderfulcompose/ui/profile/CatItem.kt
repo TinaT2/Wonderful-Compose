@@ -1,6 +1,7 @@
 package com.example.wonderfulcompose.ui.profile
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,26 +19,29 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.example.wonderfulcompose.components.PreviewUtil
 import com.example.wonderfulcompose.R
+import com.example.wonderfulcompose.components.PreviewUtil
+import com.example.wonderfulcompose.components.debugPlaceholder
 import com.example.wonderfulcompose.data.fake.catList
 import com.example.wonderfulcompose.data.models.CatPresenter
-import com.example.wonderfulcompose.components.debugPlaceholder
 import com.example.wonderfulcompose.ui.theme.gradientBrush
 import com.example.wonderfulcompose.ui.theme.md_theme_dark_onSurface
 
 @Composable
-fun PeopleItem(personPresenter: CatPresenter) {
+fun CatItem(catPresenter: CatPresenter, onClick: (cat: CatPresenter) -> Unit) {
     val boxHeight = 200.dp
     val gradientHeight = boxHeight * 2 / 5
     Box(
         Modifier
             .size(boxHeight)
             .clip(RoundedCornerShape(10))
+            .clickable {
+                onClick(catPresenter)
+            }
     ) {
         AsyncImage(
             modifier = Modifier.fillMaxSize(),
-            model = personPresenter.avatar,
+            model = catPresenter.avatar,
             contentDescription = stringResource(id = R.string.content_description_avatar),
             placeholder = debugPlaceholder(debugPreview = R.drawable.previewcat),
             contentScale = ContentScale.Crop
@@ -50,7 +54,7 @@ fun PeopleItem(personPresenter: CatPresenter) {
                 .align(Alignment.BottomCenter)
         ) {
             Text(
-                text = personPresenter.name,
+                text = catPresenter.name,
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.Center),
@@ -66,5 +70,7 @@ fun PeopleItem(personPresenter: CatPresenter) {
 @PreviewUtil
 @Composable
 fun ChatHelperPreview() {
-    PeopleItem(catList[0])
+    CatItem(catList[0]) {
+
+    }
 }

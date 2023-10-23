@@ -20,7 +20,7 @@ import com.example.wonderfulcompose.components.PreviewUtil
 import com.example.wonderfulcompose.R
 
 @Composable
-fun CatTab() {
+fun CatProfileScreen() {
     var state by remember { mutableIntStateOf(0) }
     val titles = listOf(stringResource(R.string.tab_i_am), stringResource(R.string.tab_let_s_chat))
     val icons = listOf(R.drawable.icon_little_cat, R.drawable.icon_chat)
@@ -72,5 +72,5 @@ fun OnTabSelected(state: Int, modifier: Modifier) {
 @PreviewUtil
 @Composable
 fun CatProfilePreview() {
-    CatTab()
+    CatProfileScreen()
 }

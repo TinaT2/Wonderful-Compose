@@ -19,13 +19,25 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.wonderfulcompose.ui.profile.PeopleItem
-import com.example.wonderfulcompose.components.PreviewUtil
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.example.wonderfulcompose.R
+import com.example.wonderfulcompose.components.PreviewUtil
+import com.example.wonderfulcompose.components.navigateSingleTopTo
 import com.example.wonderfulcompose.data.fake.catList
+import com.example.wonderfulcompose.ui.profile.CatItem
+import com.example.wonderfulcompose.ui.profile.CatProfileScreen
 import com.example.wonderfulcompose.ui.theme.WonderfulComposeTheme
 
 class MainActivity : ComponentActivity() {
@@ -48,20 +60,58 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Home(name: String) {
-
+    val navController = rememberNavController()
+    val topBarState = rememberSaveable { (mutableStateOf(true)) }
+    HandleBackStackEntry(topBarState,navController.currentBackStackEntryAsState())
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { TitleTopBar(name) },
-                colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary
+            if (topBarState.value) {
+                TopAppBar(
+                    title = { TitleTopBar(name) },
+                    colors = TopAppBarDefaults.smallTopAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        titleContentColor = MaterialTheme.colorScheme.primary
+                    )
                 )
-            )
+            }
         }
     ) { innerPadding ->
-        MainBody("Hi Dear Compose App", innerPadding)
+        MainNavHost(innerPadding, navController)
     }
+}
+
+@Composable
+fun HandleBackStackEntry(
+    topBarState: MutableState<Boolean>,
+    navBackStackEntry: State<NavBackStackEntry?>
+) {
+    when (navBackStackEntry.value?.destination?.route) {
+        Main.route -> {
+            topBarState.value = true
+        }
+        CatProfile.route -> {
+            topBarState.value = false
+        }
+    }
+}
+
+@Composable
+fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
+    NavHost(
+        navController = navController,
+        startDestination = Main.route,
+        modifier = Modifier.padding(innerPadding)
+    ) {
+        composable(route = Main.route) {
+            MainBody {
+                navController.navigateSingleTopTo(CatProfile.route)
+            }
+        }
+        composable(route = CatProfile.route) {
+            CatProfileScreen()
+        }
+    }
+
 }
 
 @Composable
@@ -70,22 +120,23 @@ fun TitleTopBar(name: String) {
 }
 
 @Composable
-fun MainBody(text: String, paddingValues: PaddingValues) {
+fun MainBody(onItemClick: () -> Unit) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = Modifier
-            .padding(paddingValues)
             .background(MaterialTheme.colorScheme.primaryContainer),
         contentPadding = PaddingValues(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(catList) { cat ->
-            PeopleItem(cat)
+            CatItem(cat) {
+                onItemClick.invoke()
+            }
         }
-
     }
 }
+
 
 @PreviewUtil()
 @Composable
