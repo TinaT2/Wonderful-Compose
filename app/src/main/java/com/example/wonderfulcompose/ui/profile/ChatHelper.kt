@@ -1,4 +1,4 @@
-package com.example.wonderfulcompose
+package com.example.wonderfulcompose.ui.profile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -18,7 +18,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.example.wonderfulcompose.data.CatPresenter
+import com.example.wonderfulcompose.components.PreviewUtil
+import com.example.wonderfulcompose.R
+import com.example.wonderfulcompose.data.fake.catList
+import com.example.wonderfulcompose.data.models.CatPresenter
+import com.example.wonderfulcompose.components.debugPlaceholder
+import com.example.wonderfulcompose.ui.theme.gradientBrush
 import com.example.wonderfulcompose.ui.theme.md_theme_dark_onSurface
 
 @Composable

@@ -1,6 +1,6 @@
-package com.example.wonderfulcompose
+package com.example.wonderfulcompose.data.fake
 
-import com.example.wonderfulcompose.data.CatPresenter
+import com.example.wonderfulcompose.data.models.CatPresenter
 
 val catList = listOf(
     CatPresenter(

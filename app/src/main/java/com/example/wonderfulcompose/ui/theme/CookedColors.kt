@@ -1,4 +1,4 @@
-package com.example.wonderfulcompose
+package com.example.wonderfulcompose.ui.theme
 
 import androidx.compose.ui.graphics.Brush
 import com.example.wonderfulcompose.ui.theme.md_theme_dark_surfaceVariant_gradient_transparent_bottom

@@ -1,4 +1,4 @@
-package com.example.wonderfulcompose
+package com.example.wonderfulcompose.ui.main
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -22,6 +22,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.wonderfulcompose.ui.profile.PeopleItem
+import com.example.wonderfulcompose.components.PreviewUtil
+import com.example.wonderfulcompose.R
+import com.example.wonderfulcompose.data.fake.catList
 import com.example.wonderfulcompose.ui.theme.WonderfulComposeTheme
 
 class MainActivity : ComponentActivity() {

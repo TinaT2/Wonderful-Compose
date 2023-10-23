@@ -1,4 +1,4 @@
-package com.example.wonderfulcompose
+package com.example.wonderfulcompose.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES

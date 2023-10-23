@@ -1,4 +1,4 @@
-package com.example.wonderfulcompose.data
+package com.example.wonderfulcompose.data.models
 
 data class CatPresenter(
     val name: String,
