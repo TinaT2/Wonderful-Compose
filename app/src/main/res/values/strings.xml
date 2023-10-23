@@ -3,6 +3,6 @@
     <string name="content_description_avatar">avatar_description</string>
     <string name="cat_adoption">Cat Adoption</string>
     <string name="cd_cat_profile">Cat profile</string>
-    <string name="tab_i_am">I Am</string>
+    <string name="tab_i_am">Who I Am</string>
     <string name="tab_let_s_chat">Let\'s chat</string>
 </resources>

@@ -34,7 +34,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.wonderfulcompose.R
 import com.example.wonderfulcompose.components.PreviewUtil
-import com.example.wonderfulcompose.components.navigateSingleTopTo
 import com.example.wonderfulcompose.data.fake.catList
 import com.example.wonderfulcompose.ui.profile.CatItem
 import com.example.wonderfulcompose.ui.profile.CatProfileScreen
@@ -62,7 +61,7 @@ class MainActivity : ComponentActivity() {
 fun Home(name: String) {
     val navController = rememberNavController()
     val topBarState = rememberSaveable { (mutableStateOf(true)) }
-    HandleBackStackEntry(topBarState,navController.currentBackStackEntryAsState())
+    HandleBackStackEntry(topBarState, navController.currentBackStackEntryAsState())
     Scaffold(
         topBar = {
             if (topBarState.value) {
@@ -89,7 +88,8 @@ fun HandleBackStackEntry(
         Main.route -> {
             topBarState.value = true
         }
-        CatProfile.route -> {
+
+        CatProfile.routWithArgs -> {
             topBarState.value = false
         }
     }
@@ -103,12 +103,18 @@ fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
         modifier = Modifier.padding(innerPadding)
     ) {
         composable(route = Main.route) {
-            MainBody {
-                navController.navigateSingleTopTo(CatProfile.route)
+            MainBody { index ->
+                navController.navigateToCatProfile(index)
             }
         }
-        composable(route = CatProfile.route) {
-            CatProfileScreen()
+        composable(
+            route = CatProfile.routWithArgs,
+            arguments = CatProfile.arguments
+        ) { navBackStackEntry ->
+            val catItemIndex = navBackStackEntry.arguments?.getInt(CatProfile.catTypeArg)
+            catItemIndex?.let {
+                CatProfileScreen(it)
+            }
         }
     }
 
@@ -120,7 +126,7 @@ fun TitleTopBar(name: String) {
 }
 
 @Composable
-fun MainBody(onItemClick: () -> Unit) {
+fun MainBody(onItemClick: (catItemIndex: Int) -> Unit) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = Modifier
@@ -130,8 +136,8 @@ fun MainBody(onItemClick: () -> Unit) {
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(catList) { cat ->
-            CatItem(cat) {
-                onItemClick.invoke()
+            CatItem(cat) { selectedCat ->
+                onItemClick.invoke(catList.indexOf(selectedCat))
             }
         }
     }

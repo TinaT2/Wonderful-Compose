@@ -71,6 +71,5 @@ fun CatItem(catPresenter: CatPresenter, onClick: (cat: CatPresenter) -> Unit) {
 @Composable
 fun ChatHelperPreview() {
     CatItem(catList[0]) {
-
     }
 }
