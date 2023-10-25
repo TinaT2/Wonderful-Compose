@@ -11,18 +11,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -88,8 +91,10 @@ fun OnTabSelected(state: Int, modifier: Modifier, index: Int) {
                     alignment = Alignment.Center,
                     contentScale = ContentScale.Crop
                 )
-                ProfileText(title = "Name",content = currentCat.name)
-                ProfileText(title = "Bio",content = currentCat.bio)
+                ProfileText(title = "Name", content = currentCat.name)
+                ProfileText(title = "Bio", content = currentCat.bio)
+
+                LinearDeterminateIndicator(playfulPercentage = 0.3f)
             }
 
         }
@@ -106,7 +111,7 @@ fun OnTabSelected(state: Int, modifier: Modifier, index: Int) {
 }
 
 @Composable
-fun ProfileText(title:String,content: String) {
+fun ProfileText(title: String, content: String) {
     Box {
         Text(
             modifier = Modifier
@@ -116,16 +121,14 @@ fun ProfileText(title:String,content: String) {
                     BorderStroke(4.dp, rainbowColorsBrush),
                     RoundedCornerShape(ROUNDED_CORNER_PERCENTAGE_TEXT)
                 )
-                .padding(20.dp),
-            text = content,
-            style = MaterialTheme.typography.bodyLarge
+                .padding(20.dp), text = content, style = MaterialTheme.typography.bodyLarge
         )
         Text(
             text = title,
             textAlign = TextAlign.Start,
             modifier = Modifier
                 .align(Alignment.TopStart)
-                .padding(PaddingValues(start = 30.dp,top = 8.dp))
+                .padding(PaddingValues(start = 30.dp, top = 8.dp))
                 .background(MaterialTheme.colorScheme.background)
                 .padding(PaddingValues(start = 2.dp, end = 2.dp)),
             style = MaterialTheme.typography.titleSmall
@@ -134,6 +137,23 @@ fun ProfileText(title:String,content: String) {
     }
 
 }
+
+@Composable
+fun LinearDeterminateIndicator(playfulPercentage: Float) {
+    val currentProgress by remember { mutableFloatStateOf(playfulPercentage) }
+    LinearProgressIndicator(
+        progress = {
+            currentProgress
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .size(20.dp),
+        color = MaterialTheme.colorScheme.primary,
+        strokeCap = StrokeCap.Round
+    )
+}
+
 
 @PreviewUtil
 @Composable
