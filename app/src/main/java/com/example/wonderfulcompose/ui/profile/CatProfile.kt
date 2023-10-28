@@ -11,21 +11,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -34,6 +31,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.wonderfulcompose.R
+import com.example.wonderfulcompose.components.GradientProgressbar1
 import com.example.wonderfulcompose.components.PreviewUtil
 import com.example.wonderfulcompose.components.ROUNDED_CORNER_PERCENTAGE_IMAGE
 import com.example.wonderfulcompose.components.ROUNDED_CORNER_PERCENTAGE_TEXT
@@ -93,8 +91,8 @@ fun OnTabSelected(state: Int, modifier: Modifier, index: Int) {
                 )
                 ProfileText(title = "Name", content = currentCat.name)
                 ProfileText(title = "Bio", content = currentCat.bio)
-
-                LinearDeterminateIndicator(playfulPercentage = 0.3f)
+                //todo polish paddings
+                GradientProgressbar1(maxRangeToPlay = 80)
             }
 
         }
@@ -132,28 +130,9 @@ fun ProfileText(title: String, content: String) {
                 .background(MaterialTheme.colorScheme.background)
                 .padding(PaddingValues(start = 2.dp, end = 2.dp)),
             style = MaterialTheme.typography.titleSmall
-
         )
     }
-
 }
-
-@Composable
-fun LinearDeterminateIndicator(playfulPercentage: Float) {
-    val currentProgress by remember { mutableFloatStateOf(playfulPercentage) }
-    LinearProgressIndicator(
-        progress = {
-            currentProgress
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-            .size(20.dp),
-        color = MaterialTheme.colorScheme.primary,
-        strokeCap = StrokeCap.Round
-    )
-}
-
 
 @PreviewUtil
 @Composable
