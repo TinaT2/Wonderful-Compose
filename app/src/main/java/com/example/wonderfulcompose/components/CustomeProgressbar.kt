@@ -3,19 +3,17 @@ package com.example.wonderfulcompose.components
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -23,24 +21,26 @@ import com.example.wonderfulcompose.ui.theme.linearRainbowBrush
 import kotlinx.coroutines.delay
 
 @Composable
-fun GradientProgressbar1(
+fun GradientAnimatedLinearProgressbar(
     indicatorHeight: Dp = 30.dp,
     backgroundIndicatorColor: Color = Color.LightGray.copy(alpha = 0.3f),
-    indicatorPadding: Dp = 24.dp,
-    animationDuration: Int = 100,
+    indicatorBrush: Brush = linearRainbowBrush,
+    animationDuration: Int = 10,
     animationDelay: Int = 0,
-    maxRangeToPlay: Int = 100
+    maxRangeToPlay: Int = 100,
+    modifier: Modifier,
+    downloadedPercentage: MutableState<Float>
 ) {
-    val downloadedPercentage = remember { mutableFloatStateOf(0f) }
+
     LaunchedEffect(Unit) {
         for (i in 0 until maxRangeToPlay) {
             delay(animationDuration.toLong())
-            downloadedPercentage.floatValue += 1
+            downloadedPercentage.value += 1
         }
     }
 
     val animateNumber = animateFloatAsState(
-        targetValue = downloadedPercentage.floatValue,
+        targetValue = downloadedPercentage.value,
         animationSpec = tween(
             durationMillis = animationDuration,
             delayMillis = animationDelay
@@ -48,35 +48,32 @@ fun GradientProgressbar1(
     )
 
     Canvas(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(indicatorHeight)
-            .padding(start = indicatorPadding, end = indicatorPadding)
     ) {
-
         drawRoundRect(
             color = backgroundIndicatorColor,
             cornerRadius = CornerRadius(20f)
         )
+        val progress = (animateNumber.value / 100) * size.width
 
-        // Convert the downloaded percentage into progress (width of foreground indicator)
-        val progress =
-            (animateNumber.value / 100) * size.width // size.width returns the width of the canvas
-
-        // Foreground indicator
         drawRoundRect(
-            brush = linearRainbowBrush,
+            brush = indicatorBrush,
             cornerRadius = CornerRadius(20f),
             size = Size(width = progress, height = indicatorHeight.toPx())
         )
 
     }
+}
 
-    Spacer(modifier = Modifier.height(8.dp))
 
-    Text(
-        text = downloadedPercentage.floatValue.toInt().toString() + "%",
-        style = MaterialTheme.typography.bodyMedium
+@PreviewUtil
+@Composable
+fun ProgressIndicatorPreview() {
+    GradientAnimatedLinearProgressbar(
+        maxRangeToPlay = 80,
+        modifier = Modifier.padding(20.dp),
+        downloadedPercentage = mutableStateOf(90f)
     )
-
 }

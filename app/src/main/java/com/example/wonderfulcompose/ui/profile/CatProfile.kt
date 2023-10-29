@@ -17,12 +17,14 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -31,7 +33,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.wonderfulcompose.R
-import com.example.wonderfulcompose.components.GradientProgressbar1
+import com.example.wonderfulcompose.components.GradientAnimatedLinearProgressbar
 import com.example.wonderfulcompose.components.PreviewUtil
 import com.example.wonderfulcompose.components.ROUNDED_CORNER_PERCENTAGE_IMAGE
 import com.example.wonderfulcompose.components.ROUNDED_CORNER_PERCENTAGE_TEXT
@@ -79,6 +81,9 @@ fun OnTabSelected(state: Int, modifier: Modifier, index: Int) {
                     .fillMaxWidth()
                     .padding(8.dp)
             ) {
+                val modifier = Modifier
+                    .padding(16.dp)
+                val downloadedPercentage = remember { mutableFloatStateOf(0f) }
                 AsyncImage(
                     model = currentCat.avatar,
                     contentDescription = stringResource(id = R.string.cd_cat_profile),
@@ -89,10 +94,27 @@ fun OnTabSelected(state: Int, modifier: Modifier, index: Int) {
                     alignment = Alignment.Center,
                     contentScale = ContentScale.Crop
                 )
-                ProfileText(title = "Name", content = currentCat.name)
-                ProfileText(title = "Bio", content = currentCat.bio)
-                //todo polish paddings
-                GradientProgressbar1(maxRangeToPlay = 80)
+                ProfileText(title = "Name", content = currentCat.name, modifier = modifier)
+                ProfileText(title = "Bio", content = currentCat.bio, modifier = modifier)
+                Box {
+                    GradientAnimatedLinearProgressbar(
+                        indicatorHeight = 40.dp,
+                        maxRangeToPlay = currentCat.playful,
+                        modifier = modifier,
+                        downloadedPercentage = downloadedPercentage
+                    )
+                    Text(
+                        text = stringResource(R.string.playful),
+                        modifier = Modifier.align(Alignment.Center),
+                        style = MaterialTheme.typography.titleSmall,
+                        color = Color.White,
+                    )
+                }
+
+                Text(
+                    text = downloadedPercentage.floatValue.toInt().toString() + "%",
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
 
         }
@@ -109,11 +131,10 @@ fun OnTabSelected(state: Int, modifier: Modifier, index: Int) {
 }
 
 @Composable
-fun ProfileText(title: String, content: String) {
+fun ProfileText(title: String, content: String, modifier: Modifier) {
     Box {
         Text(
-            modifier = Modifier
-                .padding(16.dp)
+            modifier = modifier
                 .fillMaxWidth()
                 .border(
                     BorderStroke(4.dp, rainbowColorsBrush),
