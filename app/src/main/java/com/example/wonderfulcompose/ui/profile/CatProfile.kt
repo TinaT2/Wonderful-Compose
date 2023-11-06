@@ -1,5 +1,6 @@
 package com.example.wonderfulcompose.ui.profile
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,9 +17,11 @@ import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -39,8 +42,10 @@ import com.example.wonderfulcompose.components.ROUNDED_CORNER_PERCENTAGE_IMAGE
 import com.example.wonderfulcompose.components.ROUNDED_CORNER_PERCENTAGE_TEXT
 import com.example.wonderfulcompose.components.debugPlaceholder
 import com.example.wonderfulcompose.data.fake.messageList
+import com.example.wonderfulcompose.components.shimmerEffect
 import com.example.wonderfulcompose.data.fake.catList
 import com.example.wonderfulcompose.ui.theme.rainbowColorsBrush
+import kotlinx.coroutines.delay
 
 @Composable
 fun CatProfileScreen(index: Int) {
@@ -84,14 +89,24 @@ fun OnTabSelected(state: Int, modifier: Modifier, index: Int) {
             ) {
                 val modifier = Modifier
                     .padding(16.dp)
+                var showShimmer by remember { mutableStateOf(true) }
                 val downloadedPercentage = remember { mutableFloatStateOf(0f) }
+
+                LaunchedEffect(key1 = true) {
+                    delay(10000)
+                    showShimmer = false
+                }
+
+                Log.d("findingSolution", "showShimmer: $showShimmer")
+
                 AsyncImage(
-                    model = currentCat.avatar,
+                    model = if (!showShimmer) currentCat.avatar else "",
                     contentDescription = stringResource(id = R.string.cd_cat_profile),
                     placeholder = debugPlaceholder(debugPreview = R.drawable.previewcat),
                     modifier = Modifier
                         .size(200.dp)
-                        .clip(RoundedCornerShape(ROUNDED_CORNER_PERCENTAGE_IMAGE)),
+                        .clip(RoundedCornerShape(ROUNDED_CORNER_PERCENTAGE_IMAGE))
+                        .shimmerEffect(),
                     alignment = Alignment.Center,
                     contentScale = ContentScale.Crop
                 )

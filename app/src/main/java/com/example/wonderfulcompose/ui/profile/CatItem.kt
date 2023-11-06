@@ -22,15 +22,18 @@ import coil.compose.AsyncImage
 import com.example.wonderfulcompose.R
 import com.example.wonderfulcompose.components.PreviewUtil
 import com.example.wonderfulcompose.components.debugPlaceholder
+import com.example.wonderfulcompose.components.shimmerEffect
 import com.example.wonderfulcompose.data.fake.catList
 import com.example.wonderfulcompose.data.models.CatPresenter
 import com.example.wonderfulcompose.ui.theme.gradientBrush
 import com.example.wonderfulcompose.ui.theme.md_theme_dark_onSurface
 
 @Composable
-fun CatItem(catPresenter: CatPresenter, onClick: (cat: CatPresenter) -> Unit) {
+fun CatItem(isLoading: Boolean, catPresenter: CatPresenter, onClick: (cat: CatPresenter) -> Unit) {
     val boxHeight = 200.dp
     val gradientHeight = boxHeight * 2 / 5
+
+
     Box(
         Modifier
             .size(boxHeight)
@@ -40,8 +43,8 @@ fun CatItem(catPresenter: CatPresenter, onClick: (cat: CatPresenter) -> Unit) {
             }
     ) {
         AsyncImage(
-            modifier = Modifier.fillMaxSize(),
-            model = catPresenter.avatar,
+            modifier = Modifier.fillMaxSize().shimmerEffect(),
+            model = if (!isLoading) catPresenter.avatar else "",
             contentDescription = stringResource(id = R.string.content_description_avatar),
             placeholder = debugPlaceholder(debugPreview = R.drawable.previewcat),
             contentScale = ContentScale.Crop
@@ -70,6 +73,6 @@ fun CatItem(catPresenter: CatPresenter, onClick: (cat: CatPresenter) -> Unit) {
 @PreviewUtil
 @Composable
 fun ChatHelperPreview() {
-    CatItem(catList[0]) {
+    CatItem(false, catList[0]) {
     }
 }
