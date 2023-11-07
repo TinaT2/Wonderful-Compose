@@ -2,7 +2,7 @@ package com.example.wonderfulcompose.data.fake
 
 import com.example.wonderfulcompose.data.models.MessagePresenter
 
-val catAdoptionDiscussion = listOf(
+val messageList = listOf(
     MessagePresenter(
         body = "Hey Rose, have you ever considered adopting a cat?",
         userName = "John",
@@ -10,16 +10,20 @@ val catAdoptionDiscussion = listOf(
         userId = 2
     ),
     MessagePresenter(
-        body = "Yes, I'm actually thinking about it. Cats are so adorable!",
+        body = "Yes",
         userName = "Rose",
         createdAt = "09:05",
-        userId = 1
+        userId = 1,
+        repliedMessageBody = "Hey Rose, have you ever considered adopting a cat?",
+        repliedMessageUserName = "John"
     ),
     MessagePresenter(
         body = "Absolutely! They make great companions. Have you decided on a specific breed?",
         userName = "John",
         createdAt = "09:08",
-        userId = 2
+        userId = 2,
+        repliedMessageBody = "Yes, I'm actually thinking about it. Cats are so adorable!",
+        repliedMessageUserName = "Rose"
     ),
     MessagePresenter(
         body = "Not yet, but I'm inclined towards adopting a rescue cat. What about you?",
@@ -49,7 +53,8 @@ val catAdoptionDiscussion = listOf(
         body = "Not yet, but I’m thinking of naming the cat Luna. What about you, John?",
         userName = "Rose",
         createdAt = "09:30",
-        userId = 1
+        userId = 1,
+        repliedMessageBody = "Not yet, but I’m thinking of naming the cat Luna. What about you, John?"
     ),
     MessagePresenter(
         body = "I like the name Oliver for a male cat. It has a classic vibe to it, don't you think?",
@@ -93,7 +98,9 @@ val catAdoptionDiscussion = listOf(
         body = "Yes, there was a lovely tabby. I'm thinking she might be the one!",
         userName = "John",
         createdAt = "10:10",
-        userId = 2
+        userId = 2,
+        repliedMessageBody = "That's amazing! I can imagine the fun you had. Did you meet any particular cat?",
+        repliedMessageUserName = "Rose"
     ),
     MessagePresenter(
         body = "Tabbies are charming! What about her made you feel a connection?",

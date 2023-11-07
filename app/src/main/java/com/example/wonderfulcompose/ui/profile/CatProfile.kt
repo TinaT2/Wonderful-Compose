@@ -38,7 +38,7 @@ import com.example.wonderfulcompose.components.PreviewUtil
 import com.example.wonderfulcompose.components.ROUNDED_CORNER_PERCENTAGE_IMAGE
 import com.example.wonderfulcompose.components.ROUNDED_CORNER_PERCENTAGE_TEXT
 import com.example.wonderfulcompose.components.debugPlaceholder
-import com.example.wonderfulcompose.data.fake.catAdoptionDiscussion
+import com.example.wonderfulcompose.data.fake.messageList
 import com.example.wonderfulcompose.data.fake.catList
 import com.example.wonderfulcompose.ui.theme.rainbowColorsBrush
 
@@ -121,7 +121,7 @@ fun OnTabSelected(state: Int, modifier: Modifier, index: Int) {
         }
 
         1 -> {
-            MessageList(messageList = catAdoptionDiscussion)
+            MessageList(messageList = messageList)
         }
     }
 
