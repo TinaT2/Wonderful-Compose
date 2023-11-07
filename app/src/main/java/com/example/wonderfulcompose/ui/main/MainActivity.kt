@@ -11,7 +11,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -37,6 +41,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.wonderfulcompose.R
+import com.example.wonderfulcompose.components.BasicDialogBox
 import com.example.wonderfulcompose.components.PreviewUtil
 import com.example.wonderfulcompose.data.fake.catList
 import com.example.wonderfulcompose.ui.profile.CatItem
@@ -66,6 +71,7 @@ class MainActivity : ComponentActivity() {
 fun Home(name: String) {
     val navController = rememberNavController()
     val topBarState = rememberSaveable { (mutableStateOf(true)) }
+    val showDialog = rememberSaveable { mutableStateOf(false) }
     HandleBackStackEntry(topBarState, navController.currentBackStackEntryAsState())
     Scaffold(
         topBar = {
@@ -75,12 +81,21 @@ fun Home(name: String) {
                     colors = TopAppBarDefaults.smallTopAppBarColors(
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         titleContentColor = MaterialTheme.colorScheme.primary
-                    )
+                    ),
+                    actions = {
+                        IconButton(onClick = { showDialog.value = true }) {
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = null,
+                            )
+                        }
+                    }
                 )
             }
         }
     ) { innerPadding ->
         MainNavHost(innerPadding, navController)
+        OpenDialogBox(showDialog)
     }
 }
 
@@ -150,6 +165,21 @@ fun MainBody(isLoading: Boolean, onItemClick: (catItemIndex: Int) -> Unit) {
             CatItem(isLoading, cat) { selectedCat ->
                 onItemClick.invoke(catList.indexOf(selectedCat))
             }
+        }
+    }
+}
+
+
+@Composable
+fun OpenDialogBox(isDialogVisible: MutableState<Boolean>) {
+    if (isDialogVisible.value) {
+        BasicDialogBox(
+            dialogTitle = stringResource(id = R.string.unsaved_changes_dialog_title),
+            dialogText = stringResource(id = R.string.unsaved_changes_dialog_text),
+            positiveButtonText = stringResource(id = R.string.dialog_button_yes),
+            negativeButtonText = stringResource(id = R.string.dialog_button_no),
+            onConfirmation = { isDialogVisible.value = false }) {
+            isDialogVisible.value = false
         }
     }
 }

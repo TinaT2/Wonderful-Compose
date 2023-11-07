@@ -7,4 +7,8 @@
     <string name="tab_let_s_chat">Let\'s chat</string>
     <string name="playful">Playful</string>
     <string name="cd_send">send</string>
+    <string name="dialog_button_yes">Yes</string>
+    <string name="dialog_button_no">No</string>
+    <string name="unsaved_changes_dialog_title">Unsaved Changes</string>
+    <string name="unsaved_changes_dialog_text">You have unsaved changes. Are you sure you want to close without saving?"</string>
 </resources>
