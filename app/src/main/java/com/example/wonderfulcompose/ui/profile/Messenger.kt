@@ -2,13 +2,15 @@ package com.example.wonderfulcompose.ui.profile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -48,8 +50,6 @@ fun MessageList(messageList: List<MessagePresenter>) {
         }
         var text = remember { mutableStateOf("Type Something...") }
 
-//        Spacer(modifier = Modifier.weight(weight =2F,fill = true))
-
         MessengerInput(text = text, modifier = Modifier.align(Alignment.BottomCenter))
     }
 }
@@ -88,36 +88,45 @@ fun TextMessageItem(messagePresenter: MessagePresenter) {
         val textColor = if (isMessageMine()) MaterialTheme.colorScheme.onPrimaryContainer
         else MaterialTheme.colorScheme.onTertiaryContainer
         val chatMaxPadding = 54.dp
-        Box(
-            modifier = Modifier
-                .padding(8.dp)
-                .padding(
-                    if (isMessageMine()) PaddingValues(
-                        start = chatMaxPadding
-                    ) else PaddingValues(
-                        end = chatMaxPadding
-                    )
-                )
-                .background(
-                    color = bubbleColor,
-                    shape = RoundedCornerShape(ROUNDED_CORNER_PERCENTAGE_CHAT)
-                )
-                .padding(8.dp)
+        val bubbleMinSize = 180.dp
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = if (isMessageMine()) Arrangement.End else Arrangement.Start
         ) {
-            Column {
-                RepliedBox(textColor)
-                ChatFlexBoxLayout(modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(4.dp),
-                    text = body,
-                    color = textColor,
-                    messageStat = {
-                        Text(text = createdAt, color = textColor)
-                    })
+            Box(
+                modifier = Modifier
+                    .width(IntrinsicSize.Max)
+                    .defaultMinSize(bubbleMinSize)
+                    .padding(8.dp)
+                    .padding(
+                        if (isMessageMine()) PaddingValues(
+                            start = chatMaxPadding
+                        ) else PaddingValues(
+                            end = chatMaxPadding
+                        )
+                    )
+                    .background(
+                        color = bubbleColor,
+                        shape = RoundedCornerShape(ROUNDED_CORNER_PERCENTAGE_CHAT)
+                    )
+                    .padding(8.dp)
+            ) {
+                Column {
+                    RepliedBox(textColor)
+                    ChatFlexBoxLayout(modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .padding(4.dp),
+                        text = body,
+                        color = textColor,
+                        messageStat = {
+                            Text(text = createdAt, color = textColor)
+                        })
+                }
             }
         }
     }
+
 }
 
 @Composable
@@ -125,6 +134,7 @@ private fun MessagePresenter.RepliedBox(textColor: Color) {
     repliedMessageBody?.let {
         Box(
             modifier = Modifier
+                .fillMaxWidth()
                 .background(
                     MaterialTheme.colorScheme.primaryContainer,
                     shape = RoundedCornerShape(ROUNDED_CORNER_PERCENTAGE_CHAT)

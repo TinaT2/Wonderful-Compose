@@ -14,6 +14,22 @@ val messageList = listOf(
         userName = "Rose",
         createdAt = "09:05",
         userId = 1,
+        repliedMessageBody = "Hey Rose, have you ever",
+        repliedMessageUserName = "John"
+    ),
+    MessagePresenter(
+        body = "Yes",
+        userName = "John",
+        createdAt = "09:08",
+        userId = 2,
+        repliedMessageBody = "Yes",
+        repliedMessageUserName = "Rose"
+    ),
+    MessagePresenter(
+        body = "Yes",
+        userName = "Rose",
+        createdAt = "09:05",
+        userId = 1,
         repliedMessageBody = "Hey Rose, have you ever considered adopting a cat?",
         repliedMessageUserName = "John"
     ),
