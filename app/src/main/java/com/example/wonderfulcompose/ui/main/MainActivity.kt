@@ -1,6 +1,7 @@
 package com.example.wonderfulcompose.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -13,6 +14,8 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -43,6 +46,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.wonderfulcompose.R
 import com.example.wonderfulcompose.components.BasicDialogBox
 import com.example.wonderfulcompose.components.PreviewUtil
+import com.example.wonderfulcompose.components.ThemeDialogBox
 import com.example.wonderfulcompose.data.fake.catList
 import com.example.wonderfulcompose.ui.profile.CatItem
 import com.example.wonderfulcompose.ui.profile.CatProfileScreen
@@ -71,7 +75,8 @@ class MainActivity : ComponentActivity() {
 fun Home(name: String) {
     val navController = rememberNavController()
     val topBarState = rememberSaveable { (mutableStateOf(true)) }
-    val showDialog = rememberSaveable { mutableStateOf(false) }
+    val showBasicDialog = rememberSaveable { mutableStateOf(false) }
+    val showThemeDialog = rememberSaveable { mutableStateOf(false) }
     HandleBackStackEntry(topBarState, navController.currentBackStackEntryAsState())
     Scaffold(
         topBar = {
@@ -83,7 +88,11 @@ fun Home(name: String) {
                         titleContentColor = MaterialTheme.colorScheme.primary
                     ),
                     actions = {
-                        IconButton(onClick = { showDialog.value = true }) {
+                        IconButton(onClick = { showThemeDialog.value = true }) {
+                            Icon(imageVector = Icons.Default.Settings , contentDescription = null)
+                        }
+
+                        IconButton(onClick = { showBasicDialog.value = true }) {
                             Icon(
                                 imageVector = Icons.Default.Add,
                                 contentDescription = null,
@@ -95,7 +104,8 @@ fun Home(name: String) {
         }
     ) { innerPadding ->
         MainNavHost(innerPadding, navController)
-        OpenDialogBox(showDialog)
+        OpenDialogBox(showBasicDialog)
+        ChangeTheme(showThemeDialog)
     }
 }
 
@@ -179,6 +189,18 @@ fun OpenDialogBox(isDialogVisible: MutableState<Boolean>) {
             positiveButtonText = stringResource(id = R.string.dialog_button_yes),
             negativeButtonText = stringResource(id = R.string.dialog_button_no),
             onConfirmation = { isDialogVisible.value = false }) {
+            isDialogVisible.value = false
+        }
+    }
+}
+
+@Composable
+fun ChangeTheme(isDialogVisible: MutableState<Boolean>) {
+    if (isDialogVisible.value) {
+        ThemeDialogBox(
+            itemList = listOf("Light", "Dark", "System Default"),
+            currentlySelectedItem = "Dark",
+            { Log.i("ChangeTheme", "Selected theme is $it") } )  {
             isDialogVisible.value = false
         }
     }

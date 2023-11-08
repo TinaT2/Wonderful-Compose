@@ -1,5 +1,6 @@
 package com.example.wonderfulcompose.components
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -33,6 +34,40 @@ fun BasicDialogBox(
         }
     )
 }
+
+@Composable
+fun ThemeDialogBox(
+    itemList: List<String>,
+    currentlySelectedItem: String,
+    onItemSelected: (String) -> Unit,
+    onDismissRequest: () -> Unit,
+) {
+    val selectedItem = itemList.indexOf(currentlySelectedItem)
+    AlertDialog(
+        onDismissRequest = { onDismissRequest() },
+        title = {
+            Text(stringResource(id = R.string.theme_dialog_title))
+        },
+        text = {
+            Column {
+                itemList.forEach { title ->
+                    BasicRadioButton(
+                        itemTitle = title,
+                        isItemSelected = itemList[selectedItem] == title
+                    ) { onItemSelected(title) }
+                }
+            }
+        },
+        confirmButton = {},
+        dismissButton = {
+            TextButton(onClick = { onDismissRequest() }
+            ) {
+                Text(stringResource(id = R.string.theme_dialog_cancel))
+            }
+        },
+    )
+}
+
 
 @PreviewUtil
 @Composable

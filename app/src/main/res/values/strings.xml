@@ -10,5 +10,7 @@
     <string name="dialog_button_yes">Yes</string>
     <string name="dialog_button_no">No</string>
     <string name="unsaved_changes_dialog_title">Unsaved Changes</string>
-    <string name="unsaved_changes_dialog_text">You have unsaved changes. Are you sure you want to close without saving?"</string>
+    <string name="unsaved_changes_dialog_text">You have unsaved changes. Are you sure you want to close without saving?</string>
+    <string name="theme_dialog_title">Choose Theme</string>
+    <string name="theme_dialog_cancel">Cancel</string>
 </resources>
