@@ -42,22 +42,22 @@ import com.example.wonderfulcompose.data.models.isMessageMine
 
 @Composable
 fun MessageList(messageList: List<MessagePresenter>) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        LazyColumn {
+    Column(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(modifier = Modifier.weight(1f)) {
             items(messageList) { message ->
                 TextMessageItem(message)
             }
         }
-        var text = remember { mutableStateOf("Type Something...") }
+        val text = remember { mutableStateOf("Type Something...") }
 
-        MessengerInput(text = text, modifier = Modifier.align(Alignment.BottomCenter))
+        MessengerInput(text = text)
     }
 }
 
 @Composable
-private fun MessengerInput(text: MutableState<String>, modifier: Modifier) {
+private fun MessengerInput(text: MutableState<String>) {
     Box(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp), contentAlignment = Alignment.BottomCenter
     ) {
