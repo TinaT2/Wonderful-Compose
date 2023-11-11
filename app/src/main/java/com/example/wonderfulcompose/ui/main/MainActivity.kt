@@ -19,10 +19,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -38,6 +42,7 @@ import com.example.wonderfulcompose.data.fake.catList
 import com.example.wonderfulcompose.ui.profile.CatItem
 import com.example.wonderfulcompose.ui.profile.CatProfileScreen
 import com.example.wonderfulcompose.ui.theme.WonderfulComposeTheme
+import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -97,13 +102,19 @@ fun HandleBackStackEntry(
 
 @Composable
 fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
+    var isLoading by remember { mutableStateOf(true) }
+    LaunchedEffect(key1 = true) {
+        delay(2000)
+        isLoading = false
+    }
+
     NavHost(
         navController = navController,
         startDestination = Main.route,
         modifier = Modifier.padding(innerPadding)
     ) {
         composable(route = Main.route) {
-            MainBody { index ->
+            MainBody(isLoading) { index ->
                 navController.navigateToCatProfile(index)
             }
         }
@@ -126,7 +137,7 @@ fun TitleTopBar(name: String) {
 }
 
 @Composable
-fun MainBody(onItemClick: (catItemIndex: Int) -> Unit) {
+fun MainBody(isLoading: Boolean, onItemClick: (catItemIndex: Int) -> Unit) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = Modifier
@@ -136,7 +147,7 @@ fun MainBody(onItemClick: (catItemIndex: Int) -> Unit) {
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(catList) { cat ->
-            CatItem(cat) { selectedCat ->
+            CatItem(isLoading, cat) { selectedCat ->
                 onItemClick.invoke(catList.indexOf(selectedCat))
             }
         }
