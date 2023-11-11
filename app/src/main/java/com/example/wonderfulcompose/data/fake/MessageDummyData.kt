@@ -69,8 +69,7 @@ val messageList = listOf(
         body = "Not yet, but I’m thinking of naming the cat Luna. What about you, John?",
         userName = "Rose",
         createdAt = "09:30",
-        userId = 1,
-        repliedMessageBody = "Not yet, but I’m thinking of naming the cat Luna. What about you, John?"
+        userId = 1
     ),
     MessagePresenter(
         body = "I like the name Oliver for a male cat. It has a classic vibe to it, don't you think?",

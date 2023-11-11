@@ -112,11 +112,11 @@ fun TextMessageItem(messagePresenter: MessagePresenter) {
                     .padding(8.dp)
             ) {
                 Column {
+                    UserName(messagePresenter, textColor)
                     RepliedBox(textColor)
                     ChatFlexBoxLayout(modifier = Modifier
                         .fillMaxWidth()
-                        .wrapContentHeight()
-                        .padding(4.dp),
+                        .wrapContentHeight(),
                         text = body,
                         color = textColor,
                         messageStat = {
@@ -126,7 +126,24 @@ fun TextMessageItem(messagePresenter: MessagePresenter) {
             }
         }
     }
+}
 
+@Composable
+private fun UserName(
+    messagePresenter: MessagePresenter,
+    textColor: Color
+) {
+    Text(
+        text = messagePresenter.userName,
+        color = textColor,
+        style = MaterialTheme.typography.labelLarge,
+        modifier = Modifier.padding(
+            PaddingValues(
+                start = 8.dp,
+                end = 8.dp
+            )
+        )
+    )
 }
 
 @Composable
@@ -135,6 +152,7 @@ private fun MessagePresenter.RepliedBox(textColor: Color) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(PaddingValues(top = 2.dp))
                 .background(
                     MaterialTheme.colorScheme.primaryContainer,
                     shape = RoundedCornerShape(ROUNDED_CORNER_PERCENTAGE_CHAT)
