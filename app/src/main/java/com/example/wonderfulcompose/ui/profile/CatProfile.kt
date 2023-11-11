@@ -93,7 +93,7 @@ fun OnTabSelected(state: Int, modifier: Modifier, index: Int) {
                 val downloadedPercentage = remember { mutableFloatStateOf(0f) }
 
                 LaunchedEffect(key1 = true) {
-                    delay(10000)
+                    delay(1500)
                     showShimmer = false
                 }
 
