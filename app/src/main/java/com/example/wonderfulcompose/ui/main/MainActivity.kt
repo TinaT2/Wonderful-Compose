@@ -128,6 +128,7 @@ fun HandleBackStackEntry(
 @Composable
 fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
     var isLoading by remember { mutableStateOf(true) }
+    //todo-later polish this
     LaunchedEffect(key1 = true) {
         delay(2000)
         isLoading = false
@@ -182,6 +183,7 @@ fun MainBody(isLoading: Boolean, onItemClick: (catItemIndex: Int) -> Unit) {
 
 @Composable
 fun OpenDialogBox(isDialogVisible: MutableState<Boolean>) {
+    //todo-later add cat function instead
     if (isDialogVisible.value) {
         BasicDialogBox(
             dialogTitle = stringResource(id = R.string.unsaved_changes_dialog_title),
@@ -196,6 +198,7 @@ fun OpenDialogBox(isDialogVisible: MutableState<Boolean>) {
 
 @Composable
 fun ChangeTheme(isDialogVisible: MutableState<Boolean>) {
+    //todo-later add logic for theme
     if (isDialogVisible.value) {
         ThemeDialogBox(
             itemList = listOf("Light", "Dark", "System Default"),
