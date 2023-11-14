@@ -48,6 +48,7 @@ import com.example.wonderfulcompose.components.BasicDialogBox
 import com.example.wonderfulcompose.components.PreviewUtil
 import com.example.wonderfulcompose.components.ThemeDialogBox
 import com.example.wonderfulcompose.data.fake.catList
+import com.example.wonderfulcompose.ui.add.AddNewCatScreen
 import com.example.wonderfulcompose.ui.profile.CatItem
 import com.example.wonderfulcompose.ui.profile.CatProfileScreen
 import com.example.wonderfulcompose.ui.theme.WonderfulComposeTheme
@@ -92,7 +93,7 @@ fun Home(name: String) {
                             Icon(imageVector = Icons.Default.Settings , contentDescription = null)
                         }
 
-                        IconButton(onClick = { showBasicDialog.value = true }) {
+                        IconButton(onClick = { navController.navigateToAddNewCat() }) {
                             Icon(
                                 imageVector = Icons.Default.Add,
                                 contentDescription = null,
@@ -151,6 +152,12 @@ fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
             val catItemIndex = navBackStackEntry.arguments?.getInt(CatProfile.catTypeArg)
             catItemIndex?.let {
                 CatProfileScreen(it)
+            }
+        }
+
+        composable(route = AddCat.route) {
+            AddNewCatScreen {
+                navController.navigateUp()
             }
         }
     }

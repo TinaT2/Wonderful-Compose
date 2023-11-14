@@ -13,4 +13,10 @@
     <string name="unsaved_changes_dialog_text">You have unsaved changes. Are you sure you want to close without saving?</string>
     <string name="theme_dialog_title">Choose Theme</string>
     <string name="theme_dialog_cancel">Cancel</string>
+    <string name="label_new_cat_name">Name</string>
+    <string name="label_new_cat_age">Age</string>
+    <string name="label_new_cat_breed">Bread</string>
+    <string name="label_new_cat_gender">Gender</string>
+    <string name="label_new_cat_bio">Bio</string>
+    <string name="button_submit">Submit</string>
 </resources>
