@@ -66,6 +66,17 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("androidx.compose.material3:material3-android:1.2.0-alpha10")
 
+//    implementation ("com.github.jeziellago:compose-markdown:0.3.6")
+
+    implementation("com.halilibo.compose-richtext:richtext-ui:0.17.0")
+    implementation("com.halilibo.compose-richtext:richtext-commonmark:0.17.0")
+
+    implementation("org.commonmark:commonmark-parent:0.21.0")
+    implementation("org.commonmark:commonmark-ext-autolink:0.21.0")
+    implementation("org.commonmark:commonmark-ext-gfm-tables:0.21.0")
+    implementation("org.commonmark:commonmark-ext-heading-anchor:0.21.0")
+    implementation("org.commonmark:commonmark-ext-gfm-strikethrough:0.21.0")
+
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
