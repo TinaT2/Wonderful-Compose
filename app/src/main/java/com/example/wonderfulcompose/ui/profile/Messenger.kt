@@ -36,9 +36,11 @@ import com.example.wonderfulcompose.R
 import com.example.wonderfulcompose.components.PreviewUtil
 import com.example.wonderfulcompose.components.ROUNDED_CORNER_PERCENTAGE_CHAT
 import com.example.wonderfulcompose.components.chatflexbox.ChatFlexBoxLayout
+import com.example.wonderfulcompose.components.chatflexbox.ChatRowData
 import com.example.wonderfulcompose.data.fake.messageList
 import com.example.wonderfulcompose.data.models.MessagePresenter
 import com.example.wonderfulcompose.data.models.isMessageMine
+import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @Composable
 fun MessageList(messageList: List<MessagePresenter>) {
@@ -111,16 +113,36 @@ fun TextMessageItem(messagePresenter: MessagePresenter) {
                     )
                     .padding(8.dp)
             ) {
+                val chatRowData = remember { ChatRowData() }
+                Text(text = body, color = Color.Transparent, onTextLayout = { textLayoutResult ->
+                    chatRowData.text = body
+                    // maxWidth of text constraint returns parent maxWidth - horizontal padding
+                    chatRowData.lineCount = textLayoutResult.lineCount
+                    chatRowData.lastLineWidth =
+                        textLayoutResult.getLineRight(chatRowData.lineCount - 1)
+                    chatRowData.textWidth = textLayoutResult.size.width
+                })
+
                 Column {
                     UserName(messagePresenter, textColor)
                     RepliedBox(textColor)
                     ChatFlexBoxLayout(modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight(),
-                        text = body,
-                        color = textColor,
+                        chatRowData = chatRowData,
+                        message = {
+                            MarkdownText(
+                                markdown = body,
+                                style = MaterialTheme.typography.bodyLarge,
+                                modifier = Modifier.padding(8.dp)
+                            )
+                        },
                         messageStat = {
-                            Text(text = createdAt, color = textColor)
+                            Text(
+                                text = createdAt,
+                                color = textColor,
+                                modifier = Modifier.padding(PaddingValues(start = 8.dp, end = 4.dp))
+                            )
                         })
                 }
             }
