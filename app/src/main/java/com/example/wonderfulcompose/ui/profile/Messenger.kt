@@ -134,7 +134,14 @@ fun TextMessageItem(messagePresenter: MessagePresenter) {
                             MarkdownText(
                                 markdown = body,
                                 style = MaterialTheme.typography.bodyLarge,
-                                modifier = Modifier.padding(8.dp)
+                                modifier = if (body.contains('|'))
+                                    Modifier
+                                        .padding(8.dp)
+                                        .fillMaxSize()
+                                else if (chatRowData.lineCount > 1)
+                                    Modifier.padding(8.dp)
+                                else
+                                    Modifier.padding(PaddingValues(bottom = 8.dp, start = 8.dp))
                             )
                         },
                         messageStat = {

@@ -40,12 +40,36 @@ val messageList = listOf(
         userId = 2
     ),
     MessagePresenter(
-        body = "Yes",
+        body =
+        """
+| First Header  | Second Header |
+| ------------- | ------------- |
+| Content Cell  | Content Cell  |
+| Content Cell  | Content Cell  |
+
+    """.trimIndent()
+        ,
+        userName = "John",
+        createdAt = "09:00",
+        userId = 2
+    ),
+    MessagePresenter(
+        body = "First Header  | Second Header",
         userName = "Rose",
         createdAt = "09:05",
         userId = 1,
         repliedMessageBody = "Hey Rose, have you ever",
         repliedMessageUserName = "John"
+    ), MessagePresenter(
+        body = "Yes",
+        userName = "Rose",
+        createdAt = "09:05",
+        userId = 1
+    ), MessagePresenter(
+        body = "Yes|",
+        userName = "Rose",
+        createdAt = "09:05",
+        userId = 1
     ),
     MessagePresenter(
         body = "Yes",
