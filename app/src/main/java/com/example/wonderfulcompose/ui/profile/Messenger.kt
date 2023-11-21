@@ -138,8 +138,6 @@ fun TextMessageItem(messagePresenter: MessagePresenter) {
                                     Modifier
                                         .padding(8.dp)
                                         .fillMaxSize()
-                                else if (chatRowData.lineCount > 1)
-                                    Modifier.padding(8.dp)
                                 else
                                     Modifier.padding(PaddingValues(bottom = 8.dp, start = 8.dp))
                             )
