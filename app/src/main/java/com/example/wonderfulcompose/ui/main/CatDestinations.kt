@@ -22,5 +22,12 @@ object Main:CatDestinations{
     override val route: String = "main"
 }
 
+object AddCat: CatDestinations {
+    override val route: String = "add_cat"
+}
+
 fun NavHostController.navigateToCatProfile(catIndex: Int) =
     this.navigateSingleTopTo("${CatProfile.route}/$catIndex")
+
+fun NavHostController.navigateToAddNewCat() =
+    this.navigateSingleTopTo(AddCat.route)

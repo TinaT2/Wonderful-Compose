@@ -2,191 +2,284 @@ package com.example.wonderfulcompose.data.fake
 
 import com.example.wonderfulcompose.data.models.CatPresenter
 
-val catList = listOf(
+val catList = mutableListOf(
     CatPresenter(
         "Whiskers",
         "https://cdn2.thecatapi.com/images/1if.jpg",
-        "2023-09-25",
+        "2",
+        "British Shorthair",
+        "Male",
         "Meow! How are you?",
+        "2023-09-25"
     ),
     CatPresenter(
         "Mittens",
         "https://catsatthestudios.com/wp-content/uploads/2017/12/12920541_1345368955489850_5587934409579916708_n-2-960x410.jpg",
-        "2023-09-25",
+        "3",
+        "Oriental",
+        "Female",
         "Purrr... Just chilling.",
+        "2023-09-25"
     ),
     CatPresenter(
         "Felix",
         "https://cdn2.thecatapi.com/images/2fa.jpg",
-        "2023-09-25",
+        "5",
+        "Devon Rex",
+        "Male",
         "I caught a mouse today!",
+        "2023-09-25"
     ),
     CatPresenter(
         "Fluffy",
         "https://cdn2.thecatapi.com/images/2k7.jpg",
-        "2023-09-25",
+        "1",
+        "Persian",
+        "Female",
         "Nap time. Zzz...",
+        "2023-09-25"
     ),
     CatPresenter(
         "Whiskers Jr.",
         "https://www.argospetinsurance.co.uk/assets/uploads/2017/12/cat-pet-animal-domestic-104827.jpeg",
-        "2023-09-25",
+        "3",
+        "Siberian",
+        "Unknown",
         "Meow Meow Meow",
+        "2023-09-25"
     ),
     CatPresenter(
         "Shadow",
         "https://cdn2.thecatapi.com/images/1gl.jpg",
-        "2023-09-25",
+        "4",
+        "Abyssinian",
+        "Unknown",
         "On the prowl.",
+        "2023-09-25"
     ),
     CatPresenter(
         "Misty",
         "https://cdn2.thecatapi.com/images/2li.jpg",
-        "2023-09-25",
+        "6",
+        "Himalayan",
+        "Male",
         "Looking for treats.",
+        "2023-09-25"
     ),
     CatPresenter(
         "Leo",
         "https://cdn2.thecatapi.com/images/2cl.jpg",
-        "2023-09-25",
+        "9",
+        "Sphynx",
+        "Male",
         "Climbing high places.",
+        "2023-09-25"
     ),
     CatPresenter(
         "Simba",
         "https://cdn2.thecatapi.com/images/1ib.jpg",
-        "2023-09-25",
+        "3",
+        "Balinese",
+        "Male",
         "Chasing my tail.",
+        "2023-09-25"
     ),
     CatPresenter(
         "Socks",
         "https://cdn2.thecatapi.com/images/1ij.jpg",
-        "2023-09-25",
+        "5",
+        "Scottish Fold",
+        "Male",
         "I rule this house!",
+        "2023-09-25"
     ),
     CatPresenter(
         "Luna",
         "https://cdn2.thecatapi.com/images/1je.jpg",
-        "2023-09-25",
+        "4",
+        "Manx",
+        "Female",
         "The night prowler.",
+        "2023-09-25"
     ),
     CatPresenter(
         "Charlie",
         "https://cdn2.thecatapi.com/images/7mg.jpg",
-        "2023-09-25",
+        "1",
+        "Tonkinese",
+        "Male",
         "Playing with a ball.",
+        "2023-09-25"
     ),
     CatPresenter(
         "Oreo",
         "https://cdn2.thecatapi.com/images/1jh.jpg",
-        "2023-09-25",
+        "5",
+        "Norwegian Forest",
+        "Male",
         "Black and white beauty.",
+        "2023-09-25"
     ),
     CatPresenter(
         "Bella",
         "https://cdn2.thecatapi.com/images/1jp.jpg",
-        "2023-09-25",
+        "7",
+        "Balinese",
+        "Female",
         "A princess in fur.",
+        "2023-09-25"
     ),
     CatPresenter(
         "Milo",
         "https://cdn2.thecatapi.com/images/1jv.jpg",
-        "2023-09-25",
+        "4",
+        "Maine Coon",
+        "Male",
         "Loves a sunny spot.",
+        "2023-09-25"
     ),
     CatPresenter(
         "Lucy",
         "https://cdn2.thecatapi.com/images/1k3.jpg",
-        "2023-09-25",
+        "5",
+        "Cornish Rex",
+        "Female",
         "Chasing feathers.",
+        "2023-09-25"
     ),
     CatPresenter(
         "Leo",
         "https://cdn2.thecatapi.com/images/1k5.jpg",
-        "2023-09-25",
+        "6",
+        "Manx",
+        "Male",
         "A majestic feline.",
+        "2023-09-25"
     ),
     CatPresenter(
         "Daisy",
         "https://cdn2.thecatapi.com/images/1k7.jpg",
-        "2023-09-25",
+        "9",
+        "Abyssinian",
+        "Female",
         "Loves catnip.",
+        "2023-09-25"
     ),
     CatPresenter(
         "Mochi",
         "https://cdn2.thecatapi.com/images/1ka.jpg",
-        "2023-09-25",
+        "3",
+        "Bengal",
+        "Unknown",
         "Sweet and fluffy.",
+        "2023-09-25"
     ),
     CatPresenter(
         "Oliver",
         "https://cdn2.thecatapi.com/images/1kb.jpg",
-        "2023-09-25",
+        "6",
+        "Siamese",
+        "Male",
         "Always curious.",
+        "2023-09-25"
     ),
     CatPresenter(
         "Lily",
         "https://cdn2.thecatapi.com/images/1kc.jpg",
-        "2023-09-25",
+        "1",
+        "Norwegian Forest",
+        "Female",
         "Elegant and graceful.",
+        "2023-09-25"
     ),
     CatPresenter(
         "Charlie",
         "https://cdn2.thecatapi.com/images/6og.jpg",
-        "2023-09-25",
+        "4",
+        "Persian",
+        "Male",
         "Mischievous explorer.",
+        "2023-09-25"
     ),
     CatPresenter(
         "Kitty",
         "https://cdn2.thecatapi.com/images/1ke.jpg",
-        "2023-09-25",
+        "2",
+        "Sphynx",
+        "Female",
         "Purrs all day.",
+        "2023-09-25"
     ),
     CatPresenter(
         "Max",
         "https://cdn2.thecatapi.com/images/1kf.jpg",
-        "2023-09-25",
+        "11",
+        "Balinese",
+        "Male",
         "Loves to play.",
+        "2023-09-25"
     ),
     CatPresenter(
         "Sophie",
         "https://cdn2.thecatapi.com/images/1kg.jpg",
-        "2023-09-25",
+        "5",
+        "Burmese",
+        "Female",
         "Eyes like gems.",
+        "2023-09-25"
     ),
     CatPresenter(
         "Molly",
         "https://cdn2.thecatapi.com/images/1kh.jpg",
-        "2023-09-25",
+        "3",
+        "British Shorthair",
+        "Female",
         "Loves cuddles.",
+        "2023-09-25"
     ),
     CatPresenter(
         "Olivia",
         "https://cdn2.thecatapi.com/images/1ki.jpg",
-        "2023-09-25",
+        "1",
+        "Maine Coon",
+        "Female",
         "Graceful and playful.",
+        "2023-09-25"
     ),
     CatPresenter(
         "Buddy",
         "https://cdn2.thecatapi.com/images/1kj.jpg",
-        "2023-09-25",
+        "9",
+        "Tonkinese",
+        "Male",
         "Always by your side.",
+        "2023-09-25"
     ),
     CatPresenter(
         "Smokey",
         "https://cdn2.thecatapi.com/images/1kk.jpg",
-        "2023-09-25",
+        "2",
+        "Scottish Fold",
+        "Male",
         "Mysterious and wise.",
+        "2023-09-25"
     ),
     CatPresenter(
         "Lola",
         "https://cdn2.thecatapi.com/images/1kl.jpg",
-        "2023-09-25",
+        "6",
+        "Sphynx",
+        "Female",
         "Sassy and independent.",
+        "2023-09-25"
     ),
     CatPresenter(
         "Jack",
         "https://cdn2.thecatapi.com/images/1km.jpg",
-        "2023-09-25",
+        "8",
+        "Manx",
+        "Male",
         "Adventurous spirit.",
+        "2023-09-25"
     )
 )
