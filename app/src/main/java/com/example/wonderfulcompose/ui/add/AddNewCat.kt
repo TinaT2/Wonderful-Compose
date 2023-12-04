@@ -1,11 +1,11 @@
 package com.example.wonderfulcompose.ui.add
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -39,81 +39,83 @@ import com.example.wonderfulcompose.ui.theme.md_theme_light_primary
 fun AddNewCatScreen(
     onSubmitted: () -> Unit
 ) {
-    Column(
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val name = remember { mutableStateOf("") }
-        val age = remember { mutableStateOf("") }
-        val bio = remember { mutableStateOf("") }
-        var selectedIndex by remember { mutableIntStateOf(-1) }
-        var selectedBreed by remember { mutableStateOf("") }
-        var selectedGender by remember { mutableStateOf("") }
+        item {
+            val name = remember { mutableStateOf("") }
+            val age = remember { mutableStateOf("") }
+            val bio = remember { mutableStateOf("") }
+            var selectedIndex by remember { mutableIntStateOf(-1) }
+            var selectedBreed by remember { mutableStateOf("") }
+            var selectedGender by remember { mutableStateOf("") }
 
 
-        OutlinedTextField(
-            label = stringResource(id = R.string.label_new_cat_name),
-            textValue = name,
-            keyboardType = KeyboardType.Text
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        OutlinedTextField(
-            label = stringResource(id = R.string.label_new_cat_age),
-            textValue = age,
-            keyboardType = KeyboardType.Number
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        DropdownMenu(
-            label = stringResource(id = R.string.label_new_cat_breed),
-            items = breedList,
-            selectedIndex = selectedIndex,
-            onItemSelected = { index, item ->
-                selectedIndex = index
-                selectedBreed = item
-            },
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        genders.forEach { gender ->
-            BasicRadioButton(
-                itemTitle = gender,
-                isItemSelected = selectedGender == gender
-            ) { selectedGender = it}
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        OutlinedTextField(
-            modifier = Modifier.height(300.dp),
-            label = stringResource(id = R.string.label_new_cat_bio),
-            textValue = bio,
-            keyboardType = KeyboardType.Text
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Button(onClick = {
-            val newCat = CatPresenter(
-                name = name.value,
-                avatar = "",
-                age = age.value,
-                breed = selectedBreed,
-                gender = selectedGender,
-                bio = bio.value,
-                createdAt = ""
+            OutlinedTextField(
+                label = stringResource(id = R.string.label_new_cat_name),
+                textValue = name,
+                keyboardType = KeyboardType.Text
             )
-            catList.add(newCat)
-            onSubmitted()
-        }
-        ) {
-            Text(text = stringResource(id = R.string.button_submit))
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedTextField(
+                label = stringResource(id = R.string.label_new_cat_age),
+                textValue = age,
+                keyboardType = KeyboardType.Number
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            DropdownMenu(
+                label = stringResource(id = R.string.label_new_cat_breed),
+                items = breedList,
+                selectedIndex = selectedIndex,
+                onItemSelected = { index, item ->
+                    selectedIndex = index
+                    selectedBreed = item
+                },
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            genders.forEach { gender ->
+                BasicRadioButton(
+                    itemTitle = gender,
+                    isItemSelected = selectedGender == gender
+                ) { selectedGender = it }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedTextField(
+                modifier = Modifier.height(300.dp),
+                label = stringResource(id = R.string.label_new_cat_bio),
+                textValue = bio,
+                keyboardType = KeyboardType.Text
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Button(onClick = {
+                val newCat = CatPresenter(
+                    name = name.value,
+                    avatar = "",
+                    age = age.value,
+                    breed = selectedBreed,
+                    gender = selectedGender,
+                    bio = bio.value,
+                    createdAt = ""
+                )
+                catList.add(newCat)
+                onSubmitted()
+            }
+            ) {
+                Text(text = stringResource(id = R.string.button_submit))
+            }
         }
     }
 }
@@ -145,5 +147,5 @@ fun OutlinedTextField(
 @Preview(showBackground = true)
 @Composable
 fun AddNewCatPreview() {
-    AddNewCatScreen{}
+    AddNewCatScreen {}
 }
