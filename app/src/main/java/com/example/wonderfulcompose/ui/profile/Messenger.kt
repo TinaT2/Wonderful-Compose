@@ -5,15 +5,18 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -29,13 +32,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.wonderfulcompose.R
 import com.example.wonderfulcompose.components.PreviewUtil
 import com.example.wonderfulcompose.components.ROUNDED_CORNER_PERCENTAGE_CHAT
-import com.example.wonderfulcompose.components.chatflexbox.ChatFlexBoxLayout
 import com.example.wonderfulcompose.components.chatflexbox.ChatRowData
 import com.example.wonderfulcompose.data.fake.messageList
 import com.example.wonderfulcompose.data.models.MessagePresenter
@@ -81,6 +84,7 @@ private fun MessengerInput(text: MutableState<String>) {
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun TextMessageItem(messagePresenter: MessagePresenter) {
 
@@ -114,7 +118,8 @@ fun TextMessageItem(messagePresenter: MessagePresenter) {
                     .padding(8.dp)
             ) {
                 val chatRowData = remember { ChatRowData() }
-                Text(text = body, color = Color.Transparent, onTextLayout = { textLayoutResult ->
+                Text(text = body,
+                    color = Color.Transparent, onTextLayout = { textLayoutResult ->
                     chatRowData.text = body
                     // maxWidth of text constraint returns parent maxWidth - horizontal padding
                     chatRowData.lineCount = textLayoutResult.lineCount
@@ -126,29 +131,48 @@ fun TextMessageItem(messagePresenter: MessagePresenter) {
                 Column {
                     UserName(messagePresenter, textColor)
                     RepliedBox(textColor)
-                    ChatFlexBoxLayout(modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight(),
-                        chatRowData = chatRowData,
-                        message = {
+                    FlowRow(modifier = Modifier
+                        .fillMaxWidth())
+                       {
+                           val horizontalSpacePadding = 8
+                           val style =  MaterialTheme.typography.bodyLarge
+                           val lineHeight = style.lineHeight.value.toInt()
                             MarkdownText(
                                 markdown = body,
-                                style = MaterialTheme.typography.bodyLarge,
-                                modifier = if (body.contains('|'))
-                                    Modifier
-                                        .padding(8.dp)
-                                        .fillMaxSize()
-                                else
-                                    Modifier.padding(PaddingValues(bottom = 8.dp, start = 8.dp))
+                                style =style,
+                                modifier = Modifier.padding(PaddingValues(start = 8.dp))
                             )
-                        },
-                        messageStat = {
+
+                           Spacer(modifier = Modifier
+                               .weight(2f)
+                               .width(1.dp)
+                               .fillMaxHeight())
+
                             Text(
                                 text = createdAt,
                                 color = textColor,
-                                modifier = Modifier.padding(PaddingValues(start = 8.dp, end = 4.dp))
+                                modifier = Modifier
+                                    .padding(PaddingValues(start = 8.dp, end = 4.dp))
+                                    .layout { measurable, constraints ->
+                                        val placeable = measurable.measure(constraints)
+                                        if (chatRowData.lineCount > 1 && chatRowData.lastLineWidth + placeable.width + horizontalSpacePadding * 2 < chatRowData.textWidth) {
+
+                                            layout(placeable.width, 0) {
+                                                // Where the composable gets placed
+                                                placeable.placeRelative(
+                                                    0,
+                                                    -placeable.height + lineHeight / 2
+                                                )
+                                            }
+                                        } else {
+                                            layout(placeable.width, placeable.height) {
+                                                // Where the composable gets placed
+                                                placeable.placeRelative(0, 0)
+                                            }
+                                        }
+                                    }
                             )
-                        })
+                        }
                 }
             }
         }

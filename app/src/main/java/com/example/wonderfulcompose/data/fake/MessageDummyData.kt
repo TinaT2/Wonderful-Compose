@@ -4,6 +4,14 @@ import com.example.wonderfulcompose.data.models.MessagePresenter
 
 val messageList = listOf(
     MessagePresenter(
+        body = "Absolutely! They make great companions. Have you decided on a specific breed?",
+        userName = "John",
+        createdAt = "09:08",
+        userId = 2,
+        repliedMessageBody = "Yes, I'm actually thinking about it. Cats are so adorable!",
+        repliedMessageUserName = "Rose"
+    ),
+    MessagePresenter(
         body =
         """
     # Demo
