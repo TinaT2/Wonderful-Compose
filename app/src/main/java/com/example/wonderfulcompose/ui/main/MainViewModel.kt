@@ -6,6 +6,7 @@ import com.example.wonderfulcompose.data.models.CatPresenter
 import com.example.wonderfulcompose.data.models.CatsContract
 import com.example.wonderfulcompose.data.models.CatsContract.*
 import com.example.wonderfulcompose.data.repository.CatRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -16,14 +17,10 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
+@HiltViewModel
 class MainViewModel @Inject constructor(
    private val catsRepository: CatRepository
 ) : ViewModel(), CatsContract {
-
-    init {
-        handleAction()
-    }
 
     private val mutableState = MutableStateFlow(State())
     override val state: StateFlow<State> = mutableState.asStateFlow()

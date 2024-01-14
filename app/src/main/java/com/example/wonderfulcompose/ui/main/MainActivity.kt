@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -47,20 +46,18 @@ import com.example.wonderfulcompose.R
 import com.example.wonderfulcompose.components.BasicDialogBox
 import com.example.wonderfulcompose.components.PreviewUtil
 import com.example.wonderfulcompose.components.ThemeDialogBox
+import com.example.wonderfulcompose.components.use
 import com.example.wonderfulcompose.data.fake.catList
-import com.example.wonderfulcompose.data.repository.CatRepository
 import com.example.wonderfulcompose.ui.add.AddNewCatScreen
 import com.example.wonderfulcompose.ui.profile.CatItem
 import com.example.wonderfulcompose.ui.profile.CatProfileScreen
 import com.example.wonderfulcompose.ui.theme.WonderfulComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
-import javax.inject.Inject
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-    @Inject lateinit var viewModel: MainViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -96,7 +93,7 @@ fun Home(name: String) {
                     ),
                     actions = {
                         IconButton(onClick = { showThemeDialog.value = true }) {
-                            Icon(imageVector = Icons.Default.Settings , contentDescription = null)
+                            Icon(imageVector = Icons.Default.Settings, contentDescription = null)
                         }
 
                         IconButton(onClick = { navController.navigateToAddNewCat() }) {
@@ -147,9 +144,9 @@ fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
         modifier = Modifier.padding(innerPadding)
     ) {
         composable(route = Main.route) {
-            MainBody(isLoading) { index ->
+            MainBody(isLoading = isLoading, onItemClick = { index ->
                 navController.navigateToCatProfile(index)
-            }
+            })
         }
         composable(
             route = CatProfile.routWithArgs,
@@ -176,7 +173,12 @@ fun TitleTopBar(name: String) {
 }
 
 @Composable
-fun MainBody(isLoading: Boolean, onItemClick: (catItemIndex: Int) -> Unit) {
+fun MainBody(
+    isLoading: Boolean,
+    onItemClick: (catItemIndex: Int) -> Unit,
+    viewModel: MainViewModel = viewModel()
+) {
+    val (state, effect, event) = use(viewModel = viewModel)
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = Modifier
@@ -216,7 +218,7 @@ fun ChangeTheme(isDialogVisible: MutableState<Boolean>) {
         ThemeDialogBox(
             itemList = listOf("Light", "Dark", "System Default"),
             currentlySelectedItem = "Dark",
-            { Log.i("ChangeTheme", "Selected theme is $it") } )  {
+            { Log.i("ChangeTheme", "Selected theme is $it") }) {
             isDialogVisible.value = false
         }
     }
