@@ -4,8 +4,9 @@ import com.example.wonderfulcompose.data.fake.catList
 import com.example.wonderfulcompose.data.models.CatPresenter
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
-class CatRepository {
+class CatRepository @Inject constructor(){
     fun loadCats(isFavorite: Boolean): Flow<List<CatPresenter>> {
         return flow { catList }
     }
