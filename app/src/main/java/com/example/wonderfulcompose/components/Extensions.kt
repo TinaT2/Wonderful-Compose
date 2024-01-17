@@ -28,15 +28,15 @@ inline fun <reified STATE, ACTION, INTENT> use(
 
     return StateDispatchEffect(
         state = state,
-        dispatch = dispatch,
         effectFlow = viewModel.action,
+        dispatch = dispatch
     )
 }
 
 data class StateDispatchEffect<STATE, ACTION, INTENT>(
     val state: STATE,
-    val dispatch: (INTENT) -> Unit,
     val effectFlow: SharedFlow<ACTION>,
+    val dispatch: (INTENT) -> Unit,
 )
 
 @Suppress("ComposableNaming")

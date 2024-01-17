@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 @HiltViewModel
 class MainViewModel @Inject constructor(
    private val catsRepository: CatRepository
@@ -38,7 +39,7 @@ class MainViewModel @Inject constructor(
 
     }
 
-    private fun handleAction() {
+    fun handleAction() {
         viewModelScope.launch {
             action.collect{action->
                 when(action){
@@ -50,10 +51,14 @@ class MainViewModel @Inject constructor(
                         }
                     }
                     is Action.AddToFavorite -> {
-                        TODO("Not yet implemented")
+                        mutableState.update {
+                            it.copy(isFavorite = true)
+                        }
                     }
                     is Action.RemoveFromFavorite -> {
-                        TODO("Not yet implemented")
+                        mutableState.update {
+                            it.copy(isFavorite = false)
+                        }
                     }
                 }
             }

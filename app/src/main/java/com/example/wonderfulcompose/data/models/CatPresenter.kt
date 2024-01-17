@@ -22,7 +22,8 @@ interface CatsContract :
         val loading: Boolean = false,
         val cats: List<CatPresenter> = emptyList(),
         val error: Exception? = null,
-        val showFavoriteList: Boolean = false
+        val showFavoriteList: Boolean = false,
+        val isFavorite: Boolean = false
     )
 
     sealed class Intention {

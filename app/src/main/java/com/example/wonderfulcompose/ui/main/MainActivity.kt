@@ -36,6 +36,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -48,13 +50,13 @@ import com.example.wonderfulcompose.components.PreviewUtil
 import com.example.wonderfulcompose.components.ThemeDialogBox
 import com.example.wonderfulcompose.components.use
 import com.example.wonderfulcompose.data.fake.catList
+import com.example.wonderfulcompose.data.models.CatsContract
 import com.example.wonderfulcompose.ui.add.AddNewCatScreen
 import com.example.wonderfulcompose.ui.profile.CatItem
 import com.example.wonderfulcompose.ui.profile.CatProfileScreen
 import com.example.wonderfulcompose.ui.theme.WonderfulComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
-import androidx.lifecycle.viewmodel.compose.viewModel
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -176,9 +178,10 @@ fun TitleTopBar(name: String) {
 fun MainBody(
     isLoading: Boolean,
     onItemClick: (catItemIndex: Int) -> Unit,
-    viewModel: MainViewModel = viewModel()
+    viewModel: MainViewModel = hiltViewModel()
 ) {
-    val (state, effect, event) = use(viewModel = viewModel)
+    val (state, action, intention) = use(viewModel = viewModel)
+    viewModel.handleAction()
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = Modifier
@@ -188,9 +191,14 @@ fun MainBody(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(catList) { cat ->
-            CatItem(isLoading, cat) { selectedCat ->
-                onItemClick.invoke(catList.indexOf(selectedCat))
-            }
+            CatItem(isLoading, cat,
+                onClick = { selectedCat ->
+                    onItemClick.invoke(catList.indexOf(selectedCat))
+                },
+                onFavoriteClick = {
+                    intention.invoke(CatsContract.Intention.ClickFavorite(it,!state.isFavorite))
+                },
+                isFavorite = state.isFavorite)
         }
     }
 }
