@@ -49,7 +49,6 @@ import com.example.wonderfulcompose.components.BasicDialogBox
 import com.example.wonderfulcompose.components.PreviewUtil
 import com.example.wonderfulcompose.components.ThemeDialogBox
 import com.example.wonderfulcompose.components.use
-import com.example.wonderfulcompose.data.fake.catList
 import com.example.wonderfulcompose.data.models.CatsContract
 import com.example.wonderfulcompose.ui.add.AddNewCatScreen
 import com.example.wonderfulcompose.ui.profile.CatItem
@@ -182,6 +181,7 @@ fun MainBody(
 ) {
     val (state, action, intention) = use(viewModel = viewModel)
     viewModel.handleAction()
+    intention.invoke(CatsContract.Intention.LoadAllCats)
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = Modifier
@@ -190,15 +190,15 @@ fun MainBody(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(catList) { cat ->
+        items(state.cats,key = {it.name}) { cat ->
             CatItem(isLoading, cat,
                 onClick = { selectedCat ->
-                    onItemClick.invoke(catList.indexOf(selectedCat))
+                    onItemClick.invoke(state.cats.indexOf(selectedCat))
                 },
                 onFavoriteClick = {
-                    intention.invoke(CatsContract.Intention.ClickFavorite(it,!state.isFavorite))
+                    intention.invoke(CatsContract.Intention.ClickFavorite(it,!cat.isFavorite))
                 },
-                isFavorite = state.isFavorite)
+                isFavorite = cat.isFavorite)
         }
     }
 }

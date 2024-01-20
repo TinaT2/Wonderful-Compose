@@ -47,3 +47,9 @@ fun <T> SharedFlow<T>.collectInLaunchedEffect(function: suspend (value: T) -> Un
         sharedFlow.collectLatest(function)
     }
 }
+
+fun <T> MutableList<T>.replace(oldValue:T, newValue:T): MutableList<T> {
+    val index = this.indexOf(oldValue)
+    this[index] = newValue
+    return this
+}

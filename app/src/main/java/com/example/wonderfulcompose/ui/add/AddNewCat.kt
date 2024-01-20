@@ -108,7 +108,8 @@ fun AddNewCatScreen(
                     breed = selectedBreed,
                     gender = selectedGender,
                     bio = bio.value,
-                    createdAt = ""
+                    createdAt = "",
+                    isFavorite = false
                 )
                 catList.add(newCat)
                 onSubmitted()

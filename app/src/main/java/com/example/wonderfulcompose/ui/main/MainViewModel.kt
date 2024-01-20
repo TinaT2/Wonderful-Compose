@@ -2,9 +2,12 @@ package com.example.wonderfulcompose.ui.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.wonderfulcompose.data.models.CatPresenter
+import com.example.wonderfulcompose.components.replace
+import com.example.wonderfulcompose.data.fake.catList
 import com.example.wonderfulcompose.data.models.CatsContract
-import com.example.wonderfulcompose.data.models.CatsContract.*
+import com.example.wonderfulcompose.data.models.CatsContract.Action
+import com.example.wonderfulcompose.data.models.CatsContract.Intention
+import com.example.wonderfulcompose.data.models.CatsContract.State
 import com.example.wonderfulcompose.data.repository.CatRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -13,14 +16,13 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-   private val catsRepository: CatRepository
+    private val catsRepository: CatRepository
 ) : ViewModel(), CatsContract {
 
     private val mutableState = MutableStateFlow(State())
@@ -29,35 +31,52 @@ class MainViewModel @Inject constructor(
     override val action: SharedFlow<Action> = mutableAction.asSharedFlow()
     override fun intention(intent: Intention) {
         viewModelScope.launch {
-            mutableAction.emit( when (intent) {
-                is Intention.LoadAllCats -> Action.LoadCats(false)
-                is Intention.LoadFavorites -> Action.LoadCats(true)
-                is Intention.ClickFavorite -> if (intent.isChecked) Action.AddToFavorite(intent.cat)
-                else Action.RemoveFromFavorite(intent.cat)
-            })
+            mutableAction.emit(
+                when (intent) {
+                    is Intention.LoadAllCats -> Action.LoadCats(false)
+                    is Intention.LoadFavorites -> Action.LoadCats(true)
+                    is Intention.ClickFavorite -> if (intent.isChecked) Action.AddToFavorite(intent.cat)
+                    else Action.RemoveFromFavorite(intent.cat)
+                }
+            )
         }
 
     }
 
     fun handleAction() {
         viewModelScope.launch {
-            action.collect{action->
-                when(action){
+            action.collect { action ->
+                when (action) {
                     is Action.LoadCats -> {
-                        catsRepository.loadCats(action.isFavorite).collect {cats->
-                            mutableState.update {
-                                it.copy(cats = cats)
+//                        catsRepository.loadCats(action.isFavorite).collect {cats->
+                        mutableState.update {
+                            it.copy(cats = catList.toMutableList())
+                        }
+//                        }
+                    }
+
+                    is Action.AddToFavorite -> {
+                        mutableState.update {
+                            try {
+                                it.copy(
+                                    cats = it.cats.replace(
+                                        oldValue = action.cat,
+                                        newValue = action.cat.copy(isFavorite = true)
+                                    )
+                                )
+                            } catch (exception: Exception) {
+                                it
                             }
                         }
                     }
-                    is Action.AddToFavorite -> {
-                        mutableState.update {
-                            it.copy(isFavorite = true)
-                        }
-                    }
+
                     is Action.RemoveFromFavorite -> {
                         mutableState.update {
-                            it.copy(isFavorite = false)
+                            try{
+                            it.copy(cats = it.cats.replace(oldValue = action.cat, newValue =  action.cat.copy(isFavorite = false)))
+                        } catch (exception: Exception) {
+                            it
+                        }
                         }
                     }
                 }

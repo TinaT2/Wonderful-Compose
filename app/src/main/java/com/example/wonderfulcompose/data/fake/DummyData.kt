@@ -10,7 +10,8 @@ val catList = mutableListOf(
         "British Shorthair",
         "Male",
         "Meow! How are you?",
-        "2023-09-25"
+        "2023-09-25",
+        true
     ),
     CatPresenter(
         "Mittens",
@@ -19,7 +20,8 @@ val catList = mutableListOf(
         "Oriental",
         "Female",
         "Purrr... Just chilling.",
-        "2023-09-25"
+        "2023-09-25",
+        false
     ),
     CatPresenter(
         "Felix",
@@ -28,7 +30,8 @@ val catList = mutableListOf(
         "Devon Rex",
         "Male",
         "I caught a mouse today!",
-        "2023-09-25"
+        "2023-09-25",
+        true
     ),
     CatPresenter(
         "Fluffy",
@@ -37,7 +40,8 @@ val catList = mutableListOf(
         "Persian",
         "Female",
         "Nap time. Zzz...",
-        "2023-09-25"
+        "2023-09-25",
+        true
     ),
     CatPresenter(
         "Whiskers Jr.",
@@ -46,7 +50,8 @@ val catList = mutableListOf(
         "Siberian",
         "Unknown",
         "Meow Meow Meow",
-        "2023-09-25"
+        "2023-09-25",
+        false
     ),
     CatPresenter(
         "Shadow",
@@ -55,7 +60,8 @@ val catList = mutableListOf(
         "Abyssinian",
         "Unknown",
         "On the prowl.",
-        "2023-09-25"
+        "2023-09-25",
+        true
     ),
     CatPresenter(
         "Misty",
@@ -64,7 +70,8 @@ val catList = mutableListOf(
         "Himalayan",
         "Male",
         "Looking for treats.",
-        "2023-09-25"
+        "2023-09-25",
+        true
     ),
     CatPresenter(
         "Leo",
@@ -73,7 +80,8 @@ val catList = mutableListOf(
         "Sphynx",
         "Male",
         "Climbing high places.",
-        "2023-09-25"
+        "2023-09-25",
+        false
     ),
     CatPresenter(
         "Simba",
@@ -82,7 +90,8 @@ val catList = mutableListOf(
         "Balinese",
         "Male",
         "Chasing my tail.",
-        "2023-09-25"
+        "2023-09-25",
+        true
     ),
     CatPresenter(
         "Socks",
@@ -91,7 +100,8 @@ val catList = mutableListOf(
         "Scottish Fold",
         "Male",
         "I rule this house!",
-        "2023-09-25"
+        "2023-09-25",
+        true
     ),
     CatPresenter(
         "Luna",
@@ -100,7 +110,8 @@ val catList = mutableListOf(
         "Manx",
         "Female",
         "The night prowler.",
-        "2023-09-25"
+        "2023-09-25",
+        true
     ),
     CatPresenter(
         "Charlie",
@@ -109,7 +120,8 @@ val catList = mutableListOf(
         "Tonkinese",
         "Male",
         "Playing with a ball.",
-        "2023-09-25"
+        "2023-09-25",
+        true
     ),
     CatPresenter(
         "Oreo",
@@ -118,7 +130,8 @@ val catList = mutableListOf(
         "Norwegian Forest",
         "Male",
         "Black and white beauty.",
-        "2023-09-25"
+        "2023-09-25",
+        true
     ),
     CatPresenter(
         "Bella",
@@ -127,7 +140,8 @@ val catList = mutableListOf(
         "Balinese",
         "Female",
         "A princess in fur.",
-        "2023-09-25"
+        "2023-09-25",
+        true
     ),
     CatPresenter(
         "Milo",
@@ -136,7 +150,8 @@ val catList = mutableListOf(
         "Maine Coon",
         "Male",
         "Loves a sunny spot.",
-        "2023-09-25"
+        "2023-09-25",
+        false
     ),
     CatPresenter(
         "Lucy",
@@ -145,7 +160,8 @@ val catList = mutableListOf(
         "Cornish Rex",
         "Female",
         "Chasing feathers.",
-        "2023-09-25"
+        "2023-09-25",
+        true
     ),
     CatPresenter(
         "Leo",
@@ -154,7 +170,8 @@ val catList = mutableListOf(
         "Manx",
         "Male",
         "A majestic feline.",
-        "2023-09-25"
+        "2023-09-25",
+        true
     ),
     CatPresenter(
         "Daisy",
@@ -163,7 +180,8 @@ val catList = mutableListOf(
         "Abyssinian",
         "Female",
         "Loves catnip.",
-        "2023-09-25"
+        "2023-09-25",
+        false
     ),
     CatPresenter(
         "Mochi",
@@ -172,7 +190,8 @@ val catList = mutableListOf(
         "Bengal",
         "Unknown",
         "Sweet and fluffy.",
-        "2023-09-25"
+        "2023-09-25",
+        true
     ),
     CatPresenter(
         "Oliver",
@@ -181,7 +200,8 @@ val catList = mutableListOf(
         "Siamese",
         "Male",
         "Always curious.",
-        "2023-09-25"
+        "2023-09-25",
+        false
     ),
     CatPresenter(
         "Lily",
@@ -190,7 +210,8 @@ val catList = mutableListOf(
         "Norwegian Forest",
         "Female",
         "Elegant and graceful.",
-        "2023-09-25"
+        "2023-09-25",
+        true
     ),
     CatPresenter(
         "Charlie",
@@ -199,7 +220,8 @@ val catList = mutableListOf(
         "Persian",
         "Male",
         "Mischievous explorer.",
-        "2023-09-25"
+        "2023-09-25",
+        false
     ),
     CatPresenter(
         "Kitty",
@@ -208,7 +230,8 @@ val catList = mutableListOf(
         "Sphynx",
         "Female",
         "Purrs all day.",
-        "2023-09-25"
+        "2023-09-25",
+        true
     ),
     CatPresenter(
         "Max",
@@ -217,7 +240,8 @@ val catList = mutableListOf(
         "Balinese",
         "Male",
         "Loves to play.",
-        "2023-09-25"
+        "2023-09-25",
+        false
     ),
     CatPresenter(
         "Sophie",
@@ -226,7 +250,8 @@ val catList = mutableListOf(
         "Burmese",
         "Female",
         "Eyes like gems.",
-        "2023-09-25"
+        "2023-09-25",
+        true
     ),
     CatPresenter(
         "Molly",
@@ -235,7 +260,8 @@ val catList = mutableListOf(
         "British Shorthair",
         "Female",
         "Loves cuddles.",
-        "2023-09-25"
+        "2023-09-25",
+        true
     ),
     CatPresenter(
         "Olivia",
@@ -244,7 +270,8 @@ val catList = mutableListOf(
         "Maine Coon",
         "Female",
         "Graceful and playful.",
-        "2023-09-25"
+        "2023-09-25",
+        true
     ),
     CatPresenter(
         "Buddy",
@@ -253,7 +280,8 @@ val catList = mutableListOf(
         "Tonkinese",
         "Male",
         "Always by your side.",
-        "2023-09-25"
+        "2023-09-25",
+        true
     ),
     CatPresenter(
         "Smokey",
@@ -262,7 +290,8 @@ val catList = mutableListOf(
         "Scottish Fold",
         "Male",
         "Mysterious and wise.",
-        "2023-09-25"
+        "2023-09-25",
+        false
     ),
     CatPresenter(
         "Lola",
@@ -271,7 +300,8 @@ val catList = mutableListOf(
         "Sphynx",
         "Female",
         "Sassy and independent.",
-        "2023-09-25"
+        "2023-09-25",
+        true
     ),
     CatPresenter(
         "Jack",
@@ -280,6 +310,7 @@ val catList = mutableListOf(
         "Manx",
         "Male",
         "Adventurous spirit.",
-        "2023-09-25"
+        "2023-09-25",
+        false
     )
 )

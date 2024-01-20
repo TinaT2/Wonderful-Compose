@@ -11,6 +11,7 @@ data class CatPresenter(
     val gender: String,
     val bio: String,
     val createdAt: String,
+    val isFavorite: Boolean,
     @IntRange(from = 0, to = 100) val playful: Int = (0..100).random()
 )
 
@@ -20,10 +21,9 @@ interface CatsContract :
 
     data class State(
         val loading: Boolean = false,
-        val cats: List<CatPresenter> = emptyList(),
+        val cats: MutableList<CatPresenter> = mutableListOf(),
         val error: Exception? = null,
-        val showFavoriteList: Boolean = false,
-        val isFavorite: Boolean = false
+        val showFavoriteList: Boolean = false
     )
 
     sealed class Intention {
