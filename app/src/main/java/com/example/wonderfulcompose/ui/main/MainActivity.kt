@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -52,15 +51,13 @@ import com.example.wonderfulcompose.ui.add.AddNewCatScreen
 import com.example.wonderfulcompose.ui.profile.CatItem
 import com.example.wonderfulcompose.ui.profile.CatProfileScreen
 import com.example.wonderfulcompose.ui.theme.WonderfulComposeTheme
+import androidx.lifecycle.viewmodel.compose.viewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
-import javax.inject.Inject
+import androidx.paging.compose.collectAsLazyPagingItems
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-    @Inject
-    lateinit var viewModel: MainViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -147,7 +144,7 @@ fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
         modifier = Modifier.padding(innerPadding)
     ) {
         composable(route = Main.route) {
-            MainBody(isLoading) { index ->
+            MainBody(isLoading = isLoading) { index ->
                 navController.navigateToCatProfile(index)
             }
         }
@@ -175,8 +172,10 @@ fun TitleTopBar(name: String) {
     Text(text = name)
 }
 
+
 @Composable
-fun MainBody(isLoading: Boolean, onItemClick: (catItemIndex: Int) -> Unit) {
+fun MainBody(mainViewModel: MainViewModel = viewModel(),isLoading: Boolean, onItemClick: (catItemIndex: Int) -> Unit) {
+    val cats = mainViewModel.getCats().collectAsLazyPagingItems()
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = Modifier
@@ -185,9 +184,11 @@ fun MainBody(isLoading: Boolean, onItemClick: (catItemIndex: Int) -> Unit) {
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(catList) { cat ->
-            CatItem(isLoading, cat) { selectedCat ->
-                onItemClick.invoke(catList.indexOf(selectedCat))
+        items(items = cats.itemSnapshotList) { cat ->
+            cat?.let{
+                CatItem(isLoading, cat) { selectedCat ->
+                    onItemClick.invoke(catList.indexOf(selectedCat))
+                }
             }
         }
     }

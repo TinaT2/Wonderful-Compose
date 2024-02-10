@@ -14,7 +14,7 @@ android {
     defaultConfig {
         applicationId = "com.example.wonderfulcompose"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -59,6 +59,7 @@ android {
 dependencies {
     val nav_version = "2.7.4"
     val hilt_version = "2.48.1"
+    val paging_version = "3.2.1"
 
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
@@ -68,6 +69,10 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.navigation:navigation-compose:$nav_version")
+    implementation ("androidx.paging:paging-runtime-ktx:$paging_version")
+    implementation( "androidx.paging:paging-compose:3.3.0-alpha03")
+
+
 
     implementation("io.coil-kt:coil:2.4.0")
     implementation("io.coil-kt:coil-compose:2.4.0")
