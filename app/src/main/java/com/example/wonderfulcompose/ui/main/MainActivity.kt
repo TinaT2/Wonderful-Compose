@@ -36,6 +36,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -174,7 +175,7 @@ fun TitleTopBar(name: String) {
 
 
 @Composable
-fun MainBody(mainViewModel: MainViewModel = viewModel(),isLoading: Boolean, onItemClick: (catItemIndex: Int) -> Unit) {
+fun MainBody(  mainViewModel: MainViewModel = hiltViewModel(),isLoading: Boolean, onItemClick: (catItemIndex: Int) -> Unit) {
     val cats = mainViewModel.getCats().collectAsLazyPagingItems()
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),

@@ -78,6 +78,7 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("androidx.compose.material3:material3-android:1.2.0-alpha10")
     implementation ("com.google.dagger:hilt-android:$hilt_version")
+    implementation ("androidx.hilt:hilt-navigation-compose:1.1.0")
     ksp ("com.google.dagger:hilt-android-compiler:$hilt_version")
 
     testImplementation("junit:junit:4.13.2")
