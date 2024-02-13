@@ -2,11 +2,12 @@ package com.example.wonderfulcompose.ui.main
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.example.wonderfulcompose.data.fake.catList
+import com.example.wonderfulcompose.data.CatAPI
 import com.example.wonderfulcompose.data.models.CatPresenter
 
 class CatsPagingSource(
-    val data:List<CatPresenter> = catList,
+    val api: CatAPI,
+    val pageSize: Int,
     val query: String? = null
 ) : PagingSource<Int, CatPresenter>() {
     override suspend fun load(
@@ -14,13 +15,13 @@ class CatsPagingSource(
     ): LoadResult<Int, CatPresenter> {
         return try {
             // Start refresh at page 1 if undefined.
-            val nextPageNumber = params.key ?: 1
-            val response = data
+            val pageNumber = params.key ?: 1
+            val response = api.getCat(pageNumber = pageNumber, pageSize = pageSize)
             //(pageNumber = nextPageNumber)
             LoadResult.Page(
                 data = response,
                 prevKey = null, // Only paging forward.
-                nextKey = nextPageNumber+1
+                nextKey = pageNumber + 1
             )
         } catch (e: Exception) {
             LoadResult.Error(e)

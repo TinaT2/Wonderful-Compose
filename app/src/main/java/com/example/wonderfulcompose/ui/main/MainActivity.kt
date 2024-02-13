@@ -56,6 +56,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemContentType
+import androidx.paging.compose.itemKey
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -176,7 +178,9 @@ fun TitleTopBar(name: String) {
 
 @Composable
 fun MainBody(  mainViewModel: MainViewModel = hiltViewModel(),isLoading: Boolean, onItemClick: (catItemIndex: Int) -> Unit) {
-    val cats = mainViewModel.getCats().collectAsLazyPagingItems()
+    mainViewModel.getCats()
+    val cats = mainViewModel.catsFlow.collectAsLazyPagingItems()
+
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = Modifier
@@ -185,7 +189,13 @@ fun MainBody(  mainViewModel: MainViewModel = hiltViewModel(),isLoading: Boolean
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(items = cats.itemSnapshotList) { cat ->
+
+        items(
+            count = cats.itemCount,
+            key = cats.itemKey { it.hashCode() },
+            contentType = cats.itemContentType { "contentType" }
+        ) { index ->
+            val cat = cats[index]
             cat?.let{
                 CatItem(isLoading, cat) { selectedCat ->
                     onItemClick.invoke(catList.indexOf(selectedCat))
