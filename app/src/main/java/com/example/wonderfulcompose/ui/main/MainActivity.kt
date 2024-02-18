@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Settings
@@ -43,21 +42,19 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemContentType
+import androidx.paging.compose.itemKey
 import com.example.wonderfulcompose.R
 import com.example.wonderfulcompose.components.BasicDialogBox
 import com.example.wonderfulcompose.components.PreviewUtil
 import com.example.wonderfulcompose.components.ThemeDialogBox
-import com.example.wonderfulcompose.data.fake.catList
 import com.example.wonderfulcompose.ui.add.AddNewCatScreen
 import com.example.wonderfulcompose.ui.profile.CatItem
 import com.example.wonderfulcompose.ui.profile.CatProfileScreen
 import com.example.wonderfulcompose.ui.theme.WonderfulComposeTheme
-import androidx.lifecycle.viewmodel.compose.viewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
-import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemContentType
-import androidx.paging.compose.itemKey
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -96,7 +93,7 @@ fun Home(name: String) {
                     ),
                     actions = {
                         IconButton(onClick = { showThemeDialog.value = true }) {
-                            Icon(imageVector = Icons.Default.Settings , contentDescription = null)
+                            Icon(imageVector = Icons.Default.Settings, contentDescription = null)
                         }
 
                         IconButton(onClick = { navController.navigateToAddNewCat() }) {
@@ -177,8 +174,15 @@ fun TitleTopBar(name: String) {
 
 
 @Composable
-fun MainBody(  mainViewModel: MainViewModel = hiltViewModel(),isLoading: Boolean, onItemClick: (catItemIndex: Int) -> Unit) {
-    mainViewModel.getCats()
+fun MainBody(
+    mainViewModel: MainViewModel = hiltViewModel(),
+    isLoading: Boolean,
+    onItemClick: (catItemIndex: Int) -> Unit
+) {
+    LaunchedEffect(key1 = Unit)
+    {
+        mainViewModel.getCats()
+    }
     val cats = mainViewModel.catsFlow.collectAsLazyPagingItems()
 
     LazyVerticalGrid(
@@ -196,9 +200,9 @@ fun MainBody(  mainViewModel: MainViewModel = hiltViewModel(),isLoading: Boolean
             contentType = cats.itemContentType { "contentType" }
         ) { index ->
             val cat = cats[index]
-            cat?.let{
-                CatItem(isLoading, cat) { selectedCat ->
-                    onItemClick.invoke(catList.indexOf(selectedCat))
+            cat?.let {
+                CatItem(isLoading, cat) {
+                    onItemClick.invoke(index)
                 }
             }
         }
@@ -228,7 +232,7 @@ fun ChangeTheme(isDialogVisible: MutableState<Boolean>) {
         ThemeDialogBox(
             itemList = listOf("Light", "Dark", "System Default"),
             currentlySelectedItem = "Dark",
-            { Log.i("ChangeTheme", "Selected theme is $it") } )  {
+            { Log.i("ChangeTheme", "Selected theme is $it") }) {
             isDialogVisible.value = false
         }
     }

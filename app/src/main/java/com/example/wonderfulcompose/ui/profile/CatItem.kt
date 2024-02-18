@@ -29,7 +29,7 @@ import com.example.wonderfulcompose.ui.theme.gradientBrush
 import com.example.wonderfulcompose.ui.theme.md_theme_dark_onSurface
 
 @Composable
-fun CatItem(isLoading: Boolean, catPresenter: CatPresenter, onClick: (cat: CatPresenter) -> Unit) {
+fun CatItem(isLoading: Boolean, catPresenter: CatPresenter, onClick: () -> Unit) {
     val boxHeight = 200.dp
     val gradientHeight = boxHeight * 2 / 5
 
@@ -39,7 +39,7 @@ fun CatItem(isLoading: Boolean, catPresenter: CatPresenter, onClick: (cat: CatPr
             .size(boxHeight)
             .clip(RoundedCornerShape(10))
             .clickable {
-                onClick(catPresenter)
+                onClick()
             }
     ) {
         AsyncImage(
