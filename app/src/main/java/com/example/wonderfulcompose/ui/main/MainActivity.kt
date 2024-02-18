@@ -11,10 +11,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -37,30 +35,29 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemContentType
+import androidx.paging.compose.itemKey
 import com.example.wonderfulcompose.R
 import com.example.wonderfulcompose.components.BasicDialogBox
 import com.example.wonderfulcompose.components.PreviewUtil
 import com.example.wonderfulcompose.components.ThemeDialogBox
-import com.example.wonderfulcompose.data.fake.catList
 import com.example.wonderfulcompose.ui.add.AddNewCatScreen
 import com.example.wonderfulcompose.ui.profile.CatItem
 import com.example.wonderfulcompose.ui.profile.CatProfileScreen
 import com.example.wonderfulcompose.ui.theme.WonderfulComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-    @Inject
-    lateinit var viewModel: MainViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -96,7 +93,7 @@ fun Home(name: String) {
                     ),
                     actions = {
                         IconButton(onClick = { showThemeDialog.value = true }) {
-                            Icon(imageVector = Icons.Default.Settings , contentDescription = null)
+                            Icon(imageVector = Icons.Default.Settings, contentDescription = null)
                         }
 
                         IconButton(onClick = { navController.navigateToAddNewCat() }) {
@@ -147,7 +144,7 @@ fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
         modifier = Modifier.padding(innerPadding)
     ) {
         composable(route = Main.route) {
-            MainBody(isLoading) { index ->
+            MainBody(isLoading = isLoading) { index ->
                 navController.navigateToCatProfile(index)
             }
         }
@@ -175,8 +172,19 @@ fun TitleTopBar(name: String) {
     Text(text = name)
 }
 
+
 @Composable
-fun MainBody(isLoading: Boolean, onItemClick: (catItemIndex: Int) -> Unit) {
+fun MainBody(
+    mainViewModel: MainViewModel = hiltViewModel(),
+    isLoading: Boolean,
+    onItemClick: (catItemIndex: Int) -> Unit
+) {
+    LaunchedEffect(key1 = Unit)
+    {
+        mainViewModel.getCats()
+    }
+    val cats = mainViewModel.catsFlow.collectAsLazyPagingItems()
+
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = Modifier
@@ -185,9 +193,17 @@ fun MainBody(isLoading: Boolean, onItemClick: (catItemIndex: Int) -> Unit) {
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(catList) { cat ->
-            CatItem(isLoading, cat) { selectedCat ->
-                onItemClick.invoke(catList.indexOf(selectedCat))
+
+        items(
+            count = cats.itemCount,
+            key = cats.itemKey { it.hashCode() },
+            contentType = cats.itemContentType { "contentType" }
+        ) { index ->
+            val cat = cats[index]
+            cat?.let {
+                CatItem(isLoading, cat) {
+                    onItemClick.invoke(index)
+                }
             }
         }
     }
@@ -216,7 +232,7 @@ fun ChangeTheme(isDialogVisible: MutableState<Boolean>) {
         ThemeDialogBox(
             itemList = listOf("Light", "Dark", "System Default"),
             currentlySelectedItem = "Dark",
-            { Log.i("ChangeTheme", "Selected theme is $it") } )  {
+            { Log.i("ChangeTheme", "Selected theme is $it") }) {
             isDialogVisible.value = false
         }
     }
