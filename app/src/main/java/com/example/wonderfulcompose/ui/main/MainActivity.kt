@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -13,7 +14,9 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -33,6 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -53,6 +57,12 @@ import com.example.wonderfulcompose.ui.add.AddNewCatScreen
 import com.example.wonderfulcompose.ui.profile.CatItem
 import com.example.wonderfulcompose.ui.profile.CatProfileScreen
 import com.example.wonderfulcompose.ui.theme.WonderfulComposeTheme
+import com.google.android.gms.auth.api.identity.BeginSignInRequest
+import com.google.android.gms.auth.api.identity.Identity
+import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 
@@ -60,6 +70,7 @@ import kotlinx.coroutines.delay
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             WonderfulComposeTheme {
                 // A surface container using the 'background' color from the theme
@@ -140,9 +151,12 @@ fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
 
     NavHost(
         navController = navController,
-        startDestination = Main.route,
+        startDestination = Login.route,
         modifier = Modifier.padding(innerPadding)
     ) {
+        composable(route = Login.route) {
+            LoginWithGoogle()
+        }
         composable(route = Main.route) {
             MainBody(isLoading = isLoading) { index ->
                 navController.navigateToCatProfile(index)
@@ -170,6 +184,72 @@ fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
 @Composable
 fun TitleTopBar(name: String) {
     Text(text = name)
+}
+
+@Composable
+fun LoginWithGoogle() {
+    val webClientId = stringResource(R.string.your_web_client_id)
+    var auth: FirebaseAuth? = null
+    var signInRequest:BeginSignInRequest
+    var oneTapClient: SignInClient? = null
+    val context = LocalContext.current
+    LaunchedEffect(key1 = Unit, block = {
+        auth = Firebase.auth
+        oneTapClient = Identity.getSignInClient(context)
+        signInRequest = BeginSignInRequest.builder()
+            .setGoogleIdTokenRequestOptions(
+                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                    .setSupported(true)
+                    // Your server's client ID, not your Android client ID.
+                    .setServerClientId(webClientId)
+                    // Only show accounts previously used to sign in.
+                    .setFilterByAuthorizedAccounts(true)
+                    .build()
+            )
+            .build()
+    })
+
+    Box(modifier = Modifier.fillMaxSize()) {
+Button(onClick = {
+
+    val user = auth?.currentUser
+    val googleCredential = oneTapClient?.getSignInCredentialFromIntent(null)
+
+    var currentUser = auth?.currentUser
+
+//    val googleCredential = oneTapClient.getSignInCredentialFromIntent(data)
+    val idToken = currentUser?.getIdToken(true)
+
+//    when {
+//        idToken != null -> {
+//            // Got an ID token from Google. Use it to authenticate
+//            // with Firebase.
+//            val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
+//            auth.signInWithCredential(firebaseCredential)
+//                .addOnCompleteListener(this) { task ->
+//                    if (task.isSuccessful) {
+//                        // Sign in success, update UI with the signed-in user's information
+//                        Log.d("tinas", "signInWithCredential:success")
+//                        val user = auth.currentUser
+////                        updateUI(user)
+//                    } else {
+//                        // If sign in fails, display a message to the user.
+//                        Log.w("tinas", "signInWithCredential:failure", task.exception)
+////                        updateUI(null)
+//                    }
+//                }
+//        }
+//        else -> {
+//            // Shouldn't happen.
+//            Log.d("tinas", "No ID token!")
+//        }
+//    }
+}) {
+    Icons.Default.Face
+}
+    }
+
+
 }
 
 

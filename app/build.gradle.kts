@@ -4,6 +4,7 @@ plugins {
     id ("kotlin-parcelize")
     id("com.google.devtools.ksp")
     id ("dagger.hilt.android.plugin")
+    id("com.google.gms.google-services")
 
 }
 
@@ -57,6 +58,7 @@ android {
 }
 
 dependencies {
+    implementation("com.google.android.gms:play-services-auth:21.0.0")
     val nav_version = "2.7.4"
     val hilt_version = "2.48.1"
     val paging_version = "3.2.1"
@@ -80,6 +82,9 @@ dependencies {
     implementation ("com.google.dagger:hilt-android:$hilt_version")
     implementation ("androidx.hilt:hilt-navigation-compose:1.1.0")
     ksp ("com.google.dagger:hilt-android-compiler:$hilt_version")
+
+    implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
+    implementation ("com.google.firebase:firebase-auth")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

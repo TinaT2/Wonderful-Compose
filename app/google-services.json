@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "732156957531",
+    "project_id": "wonderfulcompose",
+    "storage_bucket": "wonderfulcompose.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:732156957531:android:2b3552f3e9a393f4c3407e",
+        "android_client_info": {
+          "package_name": "com.example.wonderfulcompose"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBiD_3ZBH2A7RMVEclHb2HfNDalOCCAY2o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
