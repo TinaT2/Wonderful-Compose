@@ -1,5 +1,6 @@
 package com.example.wonderfulcompose.ui.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -190,7 +191,7 @@ fun TitleTopBar(name: String) {
 fun LoginWithGoogle() {
     val webClientId = stringResource(R.string.your_web_client_id)
     var auth: FirebaseAuth? = null
-    var signInRequest:BeginSignInRequest
+    var signInRequest: BeginSignInRequest
     var oneTapClient: SignInClient? = null
     val context = LocalContext.current
     LaunchedEffect(key1 = Unit, block = {
@@ -210,46 +211,13 @@ fun LoginWithGoogle() {
     })
 
     Box(modifier = Modifier.fillMaxSize()) {
-Button(onClick = {
-
-    val user = auth?.currentUser
-    val googleCredential = oneTapClient?.getSignInCredentialFromIntent(null)
-
-    var currentUser = auth?.currentUser
-
-//    val googleCredential = oneTapClient.getSignInCredentialFromIntent(data)
-    val idToken = currentUser?.getIdToken(true)
-
-//    when {
-//        idToken != null -> {
-//            // Got an ID token from Google. Use it to authenticate
-//            // with Firebase.
-//            val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
-//            auth.signInWithCredential(firebaseCredential)
-//                .addOnCompleteListener(this) { task ->
-//                    if (task.isSuccessful) {
-//                        // Sign in success, update UI with the signed-in user's information
-//                        Log.d("tinas", "signInWithCredential:success")
-//                        val user = auth.currentUser
-////                        updateUI(user)
-//                    } else {
-//                        // If sign in fails, display a message to the user.
-//                        Log.w("tinas", "signInWithCredential:failure", task.exception)
-////                        updateUI(null)
-//                    }
-//                }
-//        }
-//        else -> {
-//            // Shouldn't happen.
-//            Log.d("tinas", "No ID token!")
-//        }
-//    }
-}) {
-    Icons.Default.Face
-}
+        Button(onClick = {
+            val intent = Intent(context, GoogleSignInActivity::class.java)
+            context.startActivity(intent)
+        }) {
+            Icons.Default.Face
+        }
     }
-
-
 }
 
 

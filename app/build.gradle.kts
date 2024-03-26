@@ -62,6 +62,7 @@ dependencies {
     val nav_version = "2.7.4"
     val hilt_version = "2.48.1"
     val paging_version = "3.2.1"
+    val creadentails = "1.2.1"
 
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
@@ -85,6 +86,11 @@ dependencies {
 
     implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
     implementation ("com.google.firebase:firebase-auth")
+
+
+//    implementation("androidx.credentials:credentials:$creadentails")
+//    implementation("androidx.credentials:credentials-play-services-auth:$creadentails")
+//    implementation ("com.google.android.libraries.identity.googleid:googleid:$creadentails")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
