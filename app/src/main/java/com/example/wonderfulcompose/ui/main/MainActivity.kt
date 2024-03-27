@@ -1,10 +1,12 @@
 package com.example.wonderfulcompose.ui.main
 
-import android.content.Intent
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
@@ -59,9 +62,11 @@ import com.example.wonderfulcompose.ui.profile.CatItem
 import com.example.wonderfulcompose.ui.profile.CatProfileScreen
 import com.example.wonderfulcompose.ui.theme.WonderfulComposeTheme
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
-import com.google.android.gms.auth.api.identity.Identity
-import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
@@ -69,8 +74,23 @@ import kotlinx.coroutines.delay
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private lateinit var auth: FirebaseAuth
+    // [END declare_auth]
+
+    private lateinit var googleSignInClient: GoogleSignInClient
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.your_web_client_id))
+            .requestEmail()
+            .build()
+
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
+        // [END config_signin]
+
+        // [START initialize_auth]
+        // Initialize Firebase Auth
+        auth = Firebase.auth
 
         setContent {
             WonderfulComposeTheme {
@@ -190,36 +210,52 @@ fun TitleTopBar(name: String) {
 @Composable
 fun LoginWithGoogle() {
     val webClientId = stringResource(R.string.your_web_client_id)
-    var auth: FirebaseAuth? = null
+    lateinit var auth: FirebaseAuth
     var signInRequest: BeginSignInRequest
-    var oneTapClient: SignInClient? = null
     val context = LocalContext.current
+    lateinit var googleSignInClient: GoogleSignInClient
+
+    val result = remember { mutableStateOf<String?>(null) }
+    val signInIntent = googleSignInClient.signInIntent
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
+        result.value = it
+    }
+
     LaunchedEffect(key1 = Unit, block = {
-        auth = Firebase.auth
-        oneTapClient = Identity.getSignInClient(context)
-        signInRequest = BeginSignInRequest.builder()
-            .setGoogleIdTokenRequestOptions(
-                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                    .setSupported(true)
-                    // Your server's client ID, not your Android client ID.
-                    .setServerClientId(webClientId)
-                    // Only show accounts previously used to sign in.
-                    .setFilterByAuthorizedAccounts(true)
-                    .build()
-            )
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(webClientId)
+            .requestEmail()
             .build()
+
+        googleSignInClient = GoogleSignIn.getClient(context, gso)
+        auth = Firebase.auth
     })
 
     Box(modifier = Modifier.fillMaxSize()) {
         Button(onClick = {
-            val intent = Intent(context, GoogleSignInActivity::class.java)
-            context.startActivity(intent)
+            signIn(googleSignInClient)
         }) {
             Icons.Default.Face
         }
     }
 }
 
+private fun firebaseAuthWithGoogle(auth: FirebaseAuth, idToken: String, context: Context) {
+    val credential = GoogleAuthProvider.getCredential(idToken, null)
+    auth.signInWithCredential(credential)
+        .addOnCompleteListener(this) { task ->
+            if (task.isSuccessful) {
+                // Sign in success, update UI with the signed-in user's information
+                Log.d(GoogleSignInActivity.TAG, "signInWithCredential:success")
+                val user = auth.currentUser
+//                updateUI(user)
+            } else {
+                // If sign in fails, display a message to the user.
+                Log.w(GoogleSignInActivity.TAG, "signInWithCredential:failure", task.exception)
+//                updateUI(null)
+            }
+        }
+}
 
 @Composable
 fun MainBody(
