@@ -2,26 +2,25 @@ package com.example.wonderfulcompose.ui.main
 
 import android.app.Activity
 import android.app.PendingIntent
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -64,12 +63,12 @@ import com.example.wonderfulcompose.ui.add.AddNewCatScreen
 import com.example.wonderfulcompose.ui.profile.CatItem
 import com.example.wonderfulcompose.ui.profile.CatProfileScreen
 import com.example.wonderfulcompose.ui.theme.WonderfulComposeTheme
-import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -180,7 +179,9 @@ fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
         modifier = Modifier.padding(innerPadding)
     ) {
         composable(route = Login.route) {
-            LoginWithGoogle()
+            LoginWithGoogle {
+                navController.navigateToMain()
+            }
         }
         composable(route = Main.route) {
             MainBody(isLoading = isLoading) { index ->
@@ -212,7 +213,8 @@ fun TitleTopBar(name: String) {
 }
 
 @Composable
-fun LoginWithGoogle() {
+fun LoginWithGoogle(navigateToMain: (FirebaseUser) -> Unit) {
+    val mainViewModel: MainViewModel = hiltViewModel()
     val webClientId = stringResource(R.string.your_web_client_id)
     val context = LocalContext.current
     val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -225,7 +227,12 @@ fun LoginWithGoogle() {
     val RC_SIGN_IN_CODE = 100
     val signInIntent = googleSignInClient.signInIntent
     val pendingIntent =
-        PendingIntent.getActivity(context, RC_SIGN_IN_CODE, signInIntent, PendingIntent.FLAG_IMMUTABLE)
+        PendingIntent.getActivity(
+            context,
+            RC_SIGN_IN_CODE,
+            signInIntent,
+            PendingIntent.FLAG_IMMUTABLE
+        )
 
     val launcher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
@@ -235,12 +242,19 @@ fun LoginWithGoogle() {
                     // Google Sign In was successful, authenticate with Firebase
                     val account = task.result!!
                     Log.d("TinasGoogle", "firebaseAuthWithGoogle:" + account.id)
-                    firebaseAuthWithGoogle(auth= auth, idToken = account.idToken!!)
+                    firebaseAuthWithGoogle(
+                        auth = auth,
+                        idToken = account.idToken!!,
+                        navigateToMain = { user ->
+                            mainViewModel.saveUser(user)
+                            navigateToMain(user)
+                        }
+                    )
                 } catch (e: ApiException) {
                     // Google Sign In failed, update UI appropriately
                     Log.w("TinasGoogle", "Google sign in failed", e)
                 }
-            }else{
+            } else {
                 Log.d("TinasGoogle", "Google sign in failed$result")
             }
         }
@@ -252,12 +266,16 @@ fun LoginWithGoogle() {
                     .build()
             )
         }) {
-            Icons.Default.Face
+            Text(stringResource(R.string.login_with_google))
         }
     }
 }
 
-private fun firebaseAuthWithGoogle(auth: FirebaseAuth, idToken: String) {
+private fun firebaseAuthWithGoogle(
+    auth: FirebaseAuth,
+    idToken: String,
+    navigateToMain: (FirebaseUser) -> Unit
+) {
     val credential = GoogleAuthProvider.getCredential(idToken, null)
     auth.signInWithCredential(credential)
         .addOnCompleteListener { task ->
@@ -265,7 +283,7 @@ private fun firebaseAuthWithGoogle(auth: FirebaseAuth, idToken: String) {
                 // Sign in success, update UI with the signed-in user's information
                 Log.d("TinasGoogle", "signInWithCredential:success")
                 val user = auth.currentUser
-//                updateUI(user)
+                user?.let { navigateToMain(user) }
             } else {
                 // If sign in fails, display a message to the user.
                 Log.w("TinasGoogle", "signInWithCredential:failure", task.exception)
@@ -285,7 +303,6 @@ fun MainBody(
         mainViewModel.getCats()
     }
     val cats = mainViewModel.catsFlow.collectAsLazyPagingItems()
-
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = Modifier
@@ -294,7 +311,9 @@ fun MainBody(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-
+        item {
+            Row { Text(modifier = Modifier.fillMaxWidth(), text = "Hi " + mainViewModel.getUserName() + "!") }
+        }
         items(
             count = cats.itemCount,
             key = cats.itemKey { it.hashCode() },

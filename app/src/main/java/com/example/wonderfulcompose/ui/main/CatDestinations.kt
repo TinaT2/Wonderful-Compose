@@ -35,3 +35,6 @@ fun NavHostController.navigateToCatProfile(catIndex: Int) =
 
 fun NavHostController.navigateToAddNewCat() =
     this.navigateSingleTopTo(AddCat.route)
+
+fun NavHostController.navigateToMain() =
+    this.navigateSingleTopTo(Main.route)
