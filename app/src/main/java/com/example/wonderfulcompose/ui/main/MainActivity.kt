@@ -1,14 +1,10 @@
 package com.example.wonderfulcompose.ui.main
 
 import android.app.Activity
-import android.app.PendingIntent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
-import androidx.activity.result.IntentSenderRequest
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -45,6 +41,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.credentials.CredentialManager
+import androidx.credentials.CustomCredential
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.GetCredentialResponse
+import androidx.credentials.exceptions.GetCredentialException
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
@@ -63,24 +64,27 @@ import com.example.wonderfulcompose.ui.add.AddNewCatScreen
 import com.example.wonderfulcompose.ui.profile.CatItem
 import com.example.wonderfulcompose.ui.profile.CatProfileScreen
 import com.example.wonderfulcompose.ui.theme.WonderfulComposeTheme
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private lateinit var auth: FirebaseAuth
     // [END declare_auth]
 
-    private lateinit var googleSignInClient: GoogleSignInClient
+//    private lateinit var googleSignInClient: GoogleSignInClient
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -88,7 +92,7 @@ class MainActivity : ComponentActivity() {
             .requestEmail()
             .build()
 
-        googleSignInClient = GoogleSignIn.getClient(this, gso)
+//        googleSignInClient = GoogleSignIn.getClient(this, gso)
         // [END config_signin]
 
         // [START initialize_auth]
@@ -179,9 +183,7 @@ fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
         modifier = Modifier.padding(innerPadding)
     ) {
         composable(route = Login.route) {
-            LoginWithGoogle {
-                navController.navigateToMain()
-            }
+            AnotherLogin()
         }
         composable(route = Main.route) {
             MainBody(isLoading = isLoading) { index ->
@@ -213,84 +215,125 @@ fun TitleTopBar(name: String) {
 }
 
 @Composable
-fun LoginWithGoogle(navigateToMain: (FirebaseUser) -> Unit) {
-    val mainViewModel: MainViewModel = hiltViewModel()
+fun AnotherLogin( mainViewModel: MainViewModel = hiltViewModel()) {
+    val scope = CoroutineScope(Job() + Dispatchers.IO)
     val webClientId = stringResource(R.string.your_web_client_id)
     val context = LocalContext.current
-    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-        .requestIdToken(webClientId)
-        .requestEmail()
+    val credentialManager = CredentialManager.create(context)
+    val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
+        .setFilterByAuthorizedAccounts(true)
+        .setServerClientId(webClientId)
         .build()
 
-    val googleSignInClient: GoogleSignInClient = GoogleSignIn.getClient(context, gso)
-    val auth: FirebaseAuth = Firebase.auth
-    val RC_SIGN_IN_CODE = 100
-    val signInIntent = googleSignInClient.signInIntent
-    val pendingIntent =
-        PendingIntent.getActivity(
-            context,
-            RC_SIGN_IN_CODE,
-            signInIntent,
-            PendingIntent.FLAG_IMMUTABLE
-        )
+    val request: GetCredentialRequest = GetCredentialRequest.Builder()
+        .addCredentialOption(googleIdOption)
+        .build()
 
-    val launcher =
-        rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-                try {
-                    // Google Sign In was successful, authenticate with Firebase
-                    val account = task.result!!
-                    Log.d("TinasGoogle", "firebaseAuthWithGoogle:" + account.id)
-                    firebaseAuthWithGoogle(
-                        auth = auth,
-                        idToken = account.idToken!!,
-                        navigateToMain = { user ->
-                            mainViewModel.saveUser(user)
-                            navigateToMain(user)
-                        }
-                    )
-                } catch (e: ApiException) {
-                    // Google Sign In failed, update UI appropriately
-                    Log.w("TinasGoogle", "Google sign in failed", e)
-                }
-            } else {
-                Log.d("TinasGoogle", "Google sign in failed$result")
-            }
-        }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Button(onClick = {
-            launcher.launch(
-                IntentSenderRequest.Builder(pendingIntent)
-                    .build()
-            )
+            scope.launch {
+                try {
+                    val result = credentialManager.getCredential(
+                        request = request,
+                        context = context
+                    )
+                    mainViewModel.handleSignIn(result)
+                } catch (e: GetCredentialException) {
+                    Log.e("TinasGoogle", "AnotherLogin", e)
+
+                }
+            }
+
         }) {
             Text(stringResource(R.string.login_with_google))
         }
     }
+
 }
 
-private fun firebaseAuthWithGoogle(
-    auth: FirebaseAuth,
-    idToken: String,
-    navigateToMain: (FirebaseUser) -> Unit
-) {
-    val credential = GoogleAuthProvider.getCredential(idToken, null)
-    auth.signInWithCredential(credential)
-        .addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                // Sign in success, update UI with the signed-in user's information
-                Log.d("TinasGoogle", "signInWithCredential:success")
-                val user = auth.currentUser
-                user?.let { navigateToMain(user) }
-            } else {
-                // If sign in fails, display a message to the user.
-                Log.w("TinasGoogle", "signInWithCredential:failure", task.exception)
-//                updateUI(null)
-            }
-        }
-}
+
+
+//
+//@Composable
+//fun LoginWithGoogle(navigateToMain: (FirebaseUser) -> Unit) {
+//    val mainViewModel: MainViewModel = hiltViewModel()
+//    val webClientId = stringResource(R.string.your_web_client_id)
+//    val context = LocalContext.current
+//    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//        .requestIdToken(webClientId)
+//        .requestEmail()
+//        .build()
+//
+//    val googleSignInClient: GoogleSignInClient = GoogleSignIn.getClient(context, gso)
+//    val auth: FirebaseAuth = Firebase.auth
+//    val RC_SIGN_IN_CODE = 100
+//    val signInIntent = googleSignInClient.signInIntent
+//    val pendingIntent =
+//        PendingIntent.getActivity(
+//            context,
+//            RC_SIGN_IN_CODE,
+//            signInIntent,
+//            PendingIntent.FLAG_IMMUTABLE
+//        )
+//
+//    val launcher =
+//        rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
+//            if (result.resultCode == Activity.RESULT_OK) {
+//                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+//                try {
+//                    // Google Sign In was successful, authenticate with Firebase
+//                    val account = task.result!!
+//                    Log.d("TinasGoogle", "firebaseAuthWithGoogle:" + account.id)
+//                    firebaseAuthWithGoogle(
+//                        auth = auth,
+//                        idToken = account.idToken!!,
+//                        navigateToMain = { user ->
+//                            mainViewModel.saveUser(user)
+//                            navigateToMain(user)
+//                        }
+//                    )
+//                } catch (e: ApiException) {
+//                    // Google Sign In failed, update UI appropriately
+//                    Log.w("TinasGoogle", "Google sign in failed", e)
+//                }
+//            } else {
+//                Log.d("TinasGoogle", "Google sign in failed$result")
+//            }
+//        }
+//
+//    Box(modifier = Modifier.fillMaxSize()) {
+//        Button(onClick = {
+//            launcher.launch(
+//                IntentSenderRequest.Builder(pendingIntent)
+//                    .build()
+//            )
+//        }) {
+//            Text(stringResource(R.string.login_with_google))
+//        }
+//    }
+//}
+//
+//private fun firebaseAuthWithGoogle(
+//    auth: FirebaseAuth,
+//    idToken: String,
+//    navigateToMain: (FirebaseUser) -> Unit
+//) {
+//    val credential = GoogleAuthProvider.getCredential(idToken, null)
+//    auth.signInWithCredential(credential)
+//        .addOnCompleteListener { task ->
+//            if (task.isSuccessful) {
+//                // Sign in success, update UI with the signed-in user's information
+//                Log.d("TinasGoogle", "signInWithCredential:success")
+//                val user = auth.currentUser
+//                user?.let { navigateToMain(user) }
+//            } else {
+//                // If sign in fails, display a message to the user.
+//                Log.w("TinasGoogle", "signInWithCredential:failure", task.exception)
+////                updateUI(null)
+//            }
+//        }
+//}
 
 @Composable
 fun MainBody(
@@ -312,7 +355,12 @@ fun MainBody(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         item {
-            Row { Text(modifier = Modifier.fillMaxWidth(), text = "Hi " + mainViewModel.getUserName() + "!") }
+            Row {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "Hi " + mainViewModel.getUserName() + "!"
+                )
+            }
         }
         items(
             count = cats.itemCount,
