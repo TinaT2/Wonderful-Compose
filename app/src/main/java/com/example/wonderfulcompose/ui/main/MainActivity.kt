@@ -221,7 +221,7 @@ fun AnotherLogin( mainViewModel: MainViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val credentialManager = CredentialManager.create(context)
     val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
-        .setFilterByAuthorizedAccounts(true)
+        .setFilterByAuthorizedAccounts(false)
         .setServerClientId(webClientId)
         .build()
 
