@@ -1,6 +1,10 @@
 package com.example.wonderfulcompose.ui.main
 
 import android.util.Log
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialResponse
 import androidx.lifecycle.ViewModel
@@ -11,7 +15,6 @@ import com.example.wonderfulcompose.data.SharedPreferencesPersistor
 import com.example.wonderfulcompose.data.models.CatPresenter
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
-import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,11 +36,7 @@ class MainViewModel @Inject constructor(
                 _catsFlow.value = it
             }
         }
-
-
     }
-
-
 
     fun handleSignIn(result: GetCredentialResponse) {
         // Handle the successfully returned credential.
@@ -52,6 +51,8 @@ class MainViewModel @Inject constructor(
                         // authenticate on your server.
                         val googleIdTokenCredential = GoogleIdTokenCredential
                             .createFrom(credential.data)
+
+                        saveUser(googleIdTokenCredential)
 
                         Log.d("TinasGoogle", "googleIdTokenCredential:$googleIdTokenCredential")
 
@@ -71,7 +72,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun saveUser(user: FirebaseUser) {
+    private fun saveUser(user: GoogleIdTokenCredential) {
         sharedPreferencesPersistor.save(
             key = SharedPreferencesPersistor.USER_NAME,
             value = user.displayName
