@@ -53,7 +53,7 @@ class MainViewModel @Inject constructor(
                         val googleIdTokenCredential = GoogleIdTokenCredential
                             .createFrom(credential.data)
 
-                        Log.d("TinasGoogle", "firebaseAuthWithGoogle:" + googleIdTokenCredential)
+                        Log.d("TinasGoogle", "googleIdTokenCredential:$googleIdTokenCredential")
 
                     } catch (e: GoogleIdTokenParsingException) {
                         Log.e(TAG, "Received an invalid google id token response", e)

@@ -1,6 +1,5 @@
 package com.example.wonderfulcompose.ui.main
 
-import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -42,9 +41,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.credentials.CredentialManager
-import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
-import androidx.credentials.GetCredentialResponse
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
@@ -65,9 +62,7 @@ import com.example.wonderfulcompose.ui.profile.CatItem
 import com.example.wonderfulcompose.ui.profile.CatProfileScreen
 import com.example.wonderfulcompose.ui.theme.WonderfulComposeTheme
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.libraries.identity.googleid.GetGoogleIdOption
-import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
-import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
+import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -75,7 +70,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -84,7 +78,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var auth: FirebaseAuth
     // [END declare_auth]
 
-//    private lateinit var googleSignInClient: GoogleSignInClient
+    //    private lateinit var googleSignInClient: GoogleSignInClient
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -215,15 +209,14 @@ fun TitleTopBar(name: String) {
 }
 
 @Composable
-fun AnotherLogin( mainViewModel: MainViewModel = hiltViewModel()) {
+fun AnotherLogin(mainViewModel: MainViewModel = hiltViewModel()) {
     val scope = CoroutineScope(Job() + Dispatchers.IO)
     val webClientId = stringResource(R.string.your_web_client_id)
     val context = LocalContext.current
     val credentialManager = CredentialManager.create(context)
-    val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
-        .setFilterByAuthorizedAccounts(false)
-        .setServerClientId(webClientId)
-        .build()
+    val googleIdOption: GetSignInWithGoogleOption =
+        GetSignInWithGoogleOption.Builder(webClientId)
+            .build()
 
     val request: GetCredentialRequest = GetCredentialRequest.Builder()
         .addCredentialOption(googleIdOption)
@@ -251,7 +244,6 @@ fun AnotherLogin( mainViewModel: MainViewModel = hiltViewModel()) {
     }
 
 }
-
 
 
 //
