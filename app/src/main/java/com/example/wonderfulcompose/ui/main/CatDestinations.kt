@@ -26,8 +26,15 @@ object AddCat: CatDestinations {
     override val route: String = "add_cat"
 }
 
+object Login: CatDestinations {
+    override val route: String = "login_with_google"
+}
+
 fun NavHostController.navigateToCatProfile(catIndex: Int) =
     this.navigateSingleTopTo("${CatProfile.route}/$catIndex")
 
 fun NavHostController.navigateToAddNewCat() =
     this.navigateSingleTopTo(AddCat.route)
+
+fun NavHostController.navigateToMain() =
+    this.navigateSingleTopTo(Main.route)

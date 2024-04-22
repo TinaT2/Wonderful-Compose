@@ -4,6 +4,7 @@ plugins {
     id ("kotlin-parcelize")
     id("com.google.devtools.ksp")
     id ("dagger.hilt.android.plugin")
+    id("com.google.gms.google-services")
 
 }
 
@@ -80,6 +81,10 @@ dependencies {
     implementation ("com.google.dagger:hilt-android:$hilt_version")
     implementation ("androidx.hilt:hilt-navigation-compose:1.1.0")
     ksp ("com.google.dagger:hilt-android-compiler:$hilt_version")
+
+    implementation("androidx.credentials:credentials:1.3.0-alpha02")
+    implementation("androidx.credentials:credentials-play-services-auth:1.3.0-alpha02")
+    implementation ("com.google.android.libraries.identity.googleid:googleid:1.1.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
