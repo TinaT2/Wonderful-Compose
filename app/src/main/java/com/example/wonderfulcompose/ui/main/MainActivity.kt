@@ -4,16 +4,22 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Settings
@@ -36,9 +42,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
@@ -62,7 +74,6 @@ import com.example.wonderfulcompose.ui.profile.CatItem
 import com.example.wonderfulcompose.ui.profile.CatProfileScreen
 import com.example.wonderfulcompose.ui.theme.WonderfulComposeTheme
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
-import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -98,29 +109,29 @@ fun Home(name: String) {
     val showThemeDialog = rememberSaveable { mutableStateOf(false) }
     HandleBackStackEntry(topBarState, navController.currentBackStackEntryAsState())
     Scaffold(
-        topBar = {
-            if (topBarState.value) {
-                TopAppBar(
-                    title = { TitleTopBar(name) },
-                    colors = TopAppBarDefaults.smallTopAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        titleContentColor = MaterialTheme.colorScheme.primary
-                    ),
-                    actions = {
-                        IconButton(onClick = { showThemeDialog.value = true }) {
-                            Icon(imageVector = Icons.Default.Settings, contentDescription = null)
-                        }
-
-                        IconButton(onClick = { navController.navigateToAddNewCat() }) {
-                            Icon(
-                                imageVector = Icons.Default.Add,
-                                contentDescription = null,
-                            )
-                        }
-                    }
-                )
-            }
-        }
+//        topBar = {
+//            if (topBarState.value) {
+//                TopAppBar(
+//                    title = { TitleTopBar(name) },
+//                    colors = TopAppBarDefaults.smallTopAppBarColors(
+//                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+//                        titleContentColor = MaterialTheme.colorScheme.primary
+//                    ),
+//                    actions = {
+//                        IconButton(onClick = { showThemeDialog.value = true }) {
+//                            Icon(imageVector = Icons.Default.Settings, contentDescription = null)
+//                        }
+//
+//                        IconButton(onClick = { navController.navigateToAddNewCat() }) {
+//                            Icon(
+//                                imageVector = Icons.Default.Add,
+//                                contentDescription = null,
+//                            )
+//                        }
+//                    }
+//                )
+//            }
+//        }
     ) { innerPadding ->
         MainNavHost(innerPadding, navController)
         OpenDialogBox(showBasicDialog)
@@ -193,7 +204,35 @@ fun TitleTopBar(name: String) {
 }
 
 @Composable
-fun AnotherLogin(
+fun AnotherLogin(navigateToMain: () -> Unit) {
+    MaterialTheme {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            LargeIcon()
+            LoginWithGoogleButton(navigateToMain = navigateToMain)
+        }
+    }
+}
+
+@Composable
+fun LargeIcon() {
+    Image(
+        painter = painterResource(id = R.drawable.login_logo), // Replace with your large icon resource
+        contentDescription = null,
+        contentScale = ContentScale.Crop,
+        modifier = Modifier
+            .size(250.dp)
+            .clip(CircleShape)
+    )
+}
+
+@Composable
+fun LoginWithGoogleButton(
     mainViewModel: MainViewModel = hiltViewModel(),
     navigateToMain: () -> Unit
 ) {
@@ -208,9 +247,8 @@ fun AnotherLogin(
     val request: GetCredentialRequest = GetCredentialRequest.Builder()
         .addCredentialOption(googleIdOption)
         .build()
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        Button(onClick = {
+    Button(
+        onClick = {
             scope.launch {
                 try {
                     val result = credentialManager.getCredential(
@@ -224,13 +262,30 @@ fun AnotherLogin(
 
                 }
             }
-
-        }) {
-            Text(stringResource(R.string.login_with_google))
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.icon_google),
+                contentDescription = null,
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = "Login with Google",
+                fontWeight = FontWeight.Bold,
+                color = Color.White
+            )
         }
     }
-
 }
+
 
 @Composable
 fun MainBody(
