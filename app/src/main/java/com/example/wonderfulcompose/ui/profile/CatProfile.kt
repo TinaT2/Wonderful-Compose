@@ -110,7 +110,7 @@ fun OnTabSelected(state: Int, modifier: Modifier, index: Int) {
                     alignment = Alignment.Center,
                     contentScale = ContentScale.Crop
                 )
-                ProfileText(title = "Name", content = currentCat.name, modifier = modifier)
+                ProfileText(title = "Name", content = currentCat.title, modifier = modifier)
                 ProfileText(title = "Bio", content = currentCat.bio, modifier = modifier)
                 Box {
                     GradientAnimatedLinearProgressbar(

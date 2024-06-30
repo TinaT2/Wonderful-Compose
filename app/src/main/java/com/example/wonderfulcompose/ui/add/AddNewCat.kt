@@ -102,13 +102,14 @@ fun AddNewCatScreen(
 
             Button(onClick = {
                 val newCat = CatPresenter(
-                    name = name.value,
+                    title = name.value,
                     avatar = "",
                     age = age.value,
                     breed = selectedBreed,
                     gender = selectedGender,
                     bio = bio.value,
-                    createdAt = ""
+                    createdAt = "",
+                    colorId = 0
                 )
                 catList.add(newCat)
                 onSubmitted()

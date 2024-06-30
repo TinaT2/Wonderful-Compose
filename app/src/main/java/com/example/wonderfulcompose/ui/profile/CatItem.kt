@@ -57,7 +57,7 @@ fun CatItem(isLoading: Boolean, catPresenter: CatPresenter, onClick: () -> Unit)
                 .align(Alignment.BottomCenter)
         ) {
             Text(
-                text = catPresenter.name,
+                text = catPresenter.title,
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.Center),
