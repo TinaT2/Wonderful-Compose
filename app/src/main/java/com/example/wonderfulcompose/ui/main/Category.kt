@@ -29,12 +29,13 @@ import com.example.wonderfulcompose.data.models.ListItem
 import com.example.wonderfulcompose.ui.profile.CatItem
 
 @Composable
-fun Category(currentPath: String, newPath: String, onItemClick: (ListItem) -> Unit) {
-    val colorId: Int? = null
+fun Category(currentPath: String, newPath: String, colorId:Int? = null, onItemClick: (ListItem) -> Unit) {
     val categoryList = if (colorId == null)
         colorCategory
     else
         catList.filter { it.colorId == colorId }
+
+    val boxHeight = 60.dp
     Column {
         LazyRow(modifier = Modifier.padding(start = 16.dp, top = 8.dp)) {
             item {
@@ -58,7 +59,7 @@ fun Category(currentPath: String, newPath: String, onItemClick: (ListItem) -> Un
                     .padding(top = 8.dp, start = 8.dp)) {
                     Box(
                         modifier = Modifier
-                            .size(40.dp)
+                            .size(boxHeight)
                             .background(
                                 color = category.color ?: Color.Transparent,
                                 shape = RoundedCornerShape(10.dp)
@@ -66,8 +67,8 @@ fun Category(currentPath: String, newPath: String, onItemClick: (ListItem) -> Un
 
                     ){
                         if(category is CatPresenter){
-                            CatItem(isLoading = false, catPresenter = category) {
-                                //todo
+                            CatItem(isLoading = false, catPresenter = category, boxHeight = boxHeight) {
+                                onItemClick(category)
                             }
                         }
                     }
@@ -89,5 +90,5 @@ fun Category(currentPath: String, newPath: String, onItemClick: (ListItem) -> Un
 @PreviewUtil
 @Composable
 fun CategoryPreview() {
-    Category(currentPath = "", newPath = "color", {})
+    Category(currentPath = "", newPath = "color", onItemClick = {})
 }

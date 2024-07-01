@@ -70,7 +70,9 @@ import com.example.wonderfulcompose.R
 import com.example.wonderfulcompose.components.BasicDialogBox
 import com.example.wonderfulcompose.components.PreviewUtil
 import com.example.wonderfulcompose.components.ThemeDialogBox
+import com.example.wonderfulcompose.data.fake.catList
 import com.example.wonderfulcompose.data.fake.colorCategory
+import com.example.wonderfulcompose.data.models.CatPresenter
 import com.example.wonderfulcompose.ui.add.AddNewCatScreen
 import com.example.wonderfulcompose.ui.profile.CatItem
 import com.example.wonderfulcompose.ui.profile.CatProfileScreen
@@ -205,8 +207,18 @@ fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
 
         composable(route = ColorCategory.route) {
             Category(currentPath = "", newPath = ColorCategory.route) {
-                //todo get id from index?
                 navController.navigateToColorCategory(it.id)
+            }
+        }
+        composable(route = ColorCategory.routWithArgs,
+            arguments = ColorCategory.arguments) {navBackStackEntry->
+            val argument = navBackStackEntry.arguments?.getInt(ColorCategory.categoryTypeArg)
+            val categoryName = colorCategory.find { it.id ==  argument}?.title?:""
+            Category(currentPath = ColorCategory.route, newPath = categoryName, colorId = argument) {category->
+                val cat = category as? CatPresenter
+                cat?.let {
+                   navController.navigateToCatProfile(catList.indexOf(it))
+                }
             }
         }
 
@@ -337,7 +349,7 @@ fun MainBody(
         ) { index ->
             val cat = cats[index]
             cat?.let {
-                CatItem(isLoading, cat) {
+                CatItem(isLoading, cat, boxHeight = 200.dp) {
                     onItemClick.invoke(index)
                 }
             }

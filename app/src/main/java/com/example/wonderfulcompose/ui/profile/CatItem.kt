@@ -17,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.wonderfulcompose.R
@@ -29,10 +30,9 @@ import com.example.wonderfulcompose.ui.theme.gradientBrush
 import com.example.wonderfulcompose.ui.theme.md_theme_dark_onSurface
 
 @Composable
-fun CatItem(isLoading: Boolean, catPresenter: CatPresenter, onClick: () -> Unit) {
-    val boxHeight = 200.dp
+fun CatItem(isLoading: Boolean, catPresenter: CatPresenter, boxHeight: Dp, onClick: () -> Unit) {
     val gradientHeight = boxHeight * 2 / 5
-
+    val boxHeightThreshold = 200.dp
 
     Box(
         Modifier
@@ -43,28 +43,32 @@ fun CatItem(isLoading: Boolean, catPresenter: CatPresenter, onClick: () -> Unit)
             }
     ) {
         AsyncImage(
-            modifier = Modifier.fillMaxSize().shimmerEffect(),
+            modifier = Modifier
+                .fillMaxSize()
+                .shimmerEffect(),
             model = if (!isLoading) catPresenter.avatar else "",
             contentDescription = stringResource(id = R.string.content_description_avatar),
             placeholder = debugPlaceholder(debugPreview = R.drawable.previewcat),
             contentScale = ContentScale.Crop
         )
-        Box(
-            Modifier
-                .fillMaxWidth()
-                .height(gradientHeight)
-                .background(brush = gradientBrush)
-                .align(Alignment.BottomCenter)
-        ) {
-            Text(
-                text = catPresenter.title,
-                modifier = Modifier
+        if(boxHeight>=boxHeightThreshold) {
+            Box(
+                Modifier
                     .fillMaxWidth()
-                    .align(Alignment.Center),
-                style = MaterialTheme.typography.headlineMedium,
-                textAlign = TextAlign.Center,
-                color = md_theme_dark_onSurface
-            )
+                    .height(gradientHeight)
+                    .background(brush = gradientBrush)
+                    .align(Alignment.BottomCenter)
+            ) {
+                Text(
+                    text = catPresenter.title,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Center),
+                    style = MaterialTheme.typography.headlineMedium,
+                    textAlign = TextAlign.Center,
+                    color = md_theme_dark_onSurface
+                )
+            }
         }
 
     }
@@ -73,6 +77,6 @@ fun CatItem(isLoading: Boolean, catPresenter: CatPresenter, onClick: () -> Unit)
 @PreviewUtil
 @Composable
 fun ChatHelperPreview() {
-    CatItem(false, catList[0]) {
+    CatItem(false, catList[0], boxHeight = 200.dp) {
     }
 }
