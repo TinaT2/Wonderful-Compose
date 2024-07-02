@@ -21,4 +21,7 @@
     <string name="button_submit">Submit</string>
     <string name="your_web_client_id">732156957531-7o2brqn2udos0n8c6ghq33u94lne1ice.apps.googleusercontent.com</string>
     <string name="login_with_google">Login With Google</string>
+    <string name="home">Home</string>
+    <string name="colors">Colors</string>
+    <string name="nowhere">NoWhere!</string>
 </resources>

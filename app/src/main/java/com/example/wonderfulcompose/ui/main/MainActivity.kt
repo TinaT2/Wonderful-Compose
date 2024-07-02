@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -69,6 +70,9 @@ import com.example.wonderfulcompose.R
 import com.example.wonderfulcompose.components.BasicDialogBox
 import com.example.wonderfulcompose.components.PreviewUtil
 import com.example.wonderfulcompose.components.ThemeDialogBox
+import com.example.wonderfulcompose.data.fake.catList
+import com.example.wonderfulcompose.data.fake.colorCategory
+import com.example.wonderfulcompose.data.models.CatPresenter
 import com.example.wonderfulcompose.ui.add.AddNewCatScreen
 import com.example.wonderfulcompose.ui.profile.CatItem
 import com.example.wonderfulcompose.ui.profile.CatProfileScreen
@@ -109,29 +113,35 @@ fun Home(name: String) {
     val showThemeDialog = rememberSaveable { mutableStateOf(false) }
     HandleBackStackEntry(topBarState, navController.currentBackStackEntryAsState())
     Scaffold(
-//        topBar = {
-//            if (topBarState.value) {
-//                TopAppBar(
-//                    title = { TitleTopBar(name) },
-//                    colors = TopAppBarDefaults.smallTopAppBarColors(
-//                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-//                        titleContentColor = MaterialTheme.colorScheme.primary
-//                    ),
-//                    actions = {
-//                        IconButton(onClick = { showThemeDialog.value = true }) {
-//                            Icon(imageVector = Icons.Default.Settings, contentDescription = null)
-//                        }
-//
-//                        IconButton(onClick = { navController.navigateToAddNewCat() }) {
-//                            Icon(
-//                                imageVector = Icons.Default.Add,
-//                                contentDescription = null,
-//                            )
-//                        }
-//                    }
-//                )
-//            }
-//        }
+        topBar = {
+            if (topBarState.value) {
+                TopAppBar(
+                    title = { TitleTopBar(name) },
+                    colors = TopAppBarDefaults.smallTopAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        titleContentColor = MaterialTheme.colorScheme.primary
+                    ),
+                    actions = {
+                        IconButton(onClick = { showThemeDialog.value = true }) {
+                            Icon(imageVector = Icons.Default.Settings, contentDescription = null)
+                        }
+
+                        IconButton(onClick = { navController.navigateToAddNewCat() }) {
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = null,
+                            )
+                        }
+                        IconButton(onClick = { navController.navigateToColorCategory(null) }) {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = null,
+                            )
+                        }
+                    }
+                )
+            }
+        }
     ) { innerPadding ->
         MainNavHost(innerPadding, navController)
         OpenDialogBox(showBasicDialog)
@@ -166,7 +176,7 @@ fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
 
     NavHost(
         navController = navController,
-        startDestination = Login.route,
+        startDestination = Main.route,
         modifier = Modifier.padding(innerPadding)
     ) {
         composable(route = Login.route) {
@@ -194,6 +204,33 @@ fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
                 navController.navigateUp()
             }
         }
+
+        composable(route = ColorCategory.route) {
+            Category(pathList = listOf( Main.route,ColorCategory.route),onItemClick ={
+                navController.navigateToColorCategory(it.id)
+            },onPathClicked = {path->
+                when(path){
+                    ColorCategory.route->navController.navigateToColorCategory(null)
+                    Main.route->navController.navigateToMain()
+                }})
+        }
+        composable(route = ColorCategory.routWithArgs,
+            arguments = ColorCategory.arguments) {navBackStackEntry->
+            val argument = navBackStackEntry.arguments?.getInt(ColorCategory.categoryTypeArg)
+            val categoryName = colorCategory.find { it.id ==  argument}?.title?:""
+            Category(pathList = listOf(Main.route, ColorCategory.route, categoryName), colorId = argument,onItemClick= {category->
+                val cat = category as? CatPresenter
+                cat?.let {
+                   navController.navigateToCatProfile(catList.indexOf(it))
+                }
+            },onPathClicked = {path->
+                when(path){
+                    ColorCategory.route->navController.navigateToColorCategory(null)
+                    Main.route->navController.navigateToMain()
+                }
+            })
+        }
+
     }
 
 }
@@ -321,7 +358,7 @@ fun MainBody(
         ) { index ->
             val cat = cats[index]
             cat?.let {
-                CatItem(isLoading, cat) {
+                CatItem(isLoading, cat, boxHeight = 200.dp) {
                     onItemClick.invoke(index)
                 }
             }
