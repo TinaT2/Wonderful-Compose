@@ -40,7 +40,7 @@ object ColorCategory : CatDestinations {
 }
 
 fun NavHostController.navigateToCatProfile(catIndex: Int) =
-    this.navigateSingleTopTo("${CatProfile.route}/$catIndex")
+    this.navigate("${CatProfile.route}/$catIndex")
 
 fun NavHostController.navigateToAddNewCat() =
     this.navigateSingleTopTo(AddCat.route)
@@ -49,5 +49,5 @@ fun NavHostController.navigateToMain() =
     this.navigateSingleTopTo(Main.route)
 
 fun NavHostController.navigateToColorCategory(colorId: Int?) =
-    colorId?.let { this.navigateSingleTopTo("${ColorCategory.route}/$colorId") }
-        ?: this.navigateSingleTopTo(ColorCategory.route)
+    colorId?.let { this.navigate("${ColorCategory.route}/$colorId") }
+        ?: this.navigate(ColorCategory.route)
