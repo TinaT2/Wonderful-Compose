@@ -206,20 +206,29 @@ fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
         }
 
         composable(route = ColorCategory.route) {
-            Category(currentPath = "", newPath = ColorCategory.route) {
+            Category(pathList = listOf( Main.route,ColorCategory.route),onItemClick ={
                 navController.navigateToColorCategory(it.id)
-            }
+            },onPathClicked = {path->
+                when(path){
+                    ColorCategory.route->navController.navigateToColorCategory(null)
+                    Main.route->navController.navigateToMain()
+                }})
         }
         composable(route = ColorCategory.routWithArgs,
             arguments = ColorCategory.arguments) {navBackStackEntry->
             val argument = navBackStackEntry.arguments?.getInt(ColorCategory.categoryTypeArg)
             val categoryName = colorCategory.find { it.id ==  argument}?.title?:""
-            Category(currentPath = ColorCategory.route, newPath = categoryName, colorId = argument) {category->
+            Category(pathList = listOf(Main.route, ColorCategory.route, categoryName), colorId = argument,onItemClick= {category->
                 val cat = category as? CatPresenter
                 cat?.let {
                    navController.navigateToCatProfile(catList.indexOf(it))
                 }
-            }
+            },onPathClicked = {path->
+                when(path){
+                    ColorCategory.route->navController.navigateToColorCategory(null)
+                    Main.route->navController.navigateToMain()
+                }
+            })
         }
 
     }

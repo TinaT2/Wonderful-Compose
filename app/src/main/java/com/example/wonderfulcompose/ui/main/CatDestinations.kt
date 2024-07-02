@@ -4,6 +4,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.example.wonderfulcompose.components.navigateSingleTopTo
+import com.example.wonderfulcompose.components.navigateSingleTopWithFirstDestinationTo
 
 interface CatDestinations {
     val route: String
@@ -40,14 +41,14 @@ object ColorCategory : CatDestinations {
 }
 
 fun NavHostController.navigateToCatProfile(catIndex: Int) =
-    this.navigate("${CatProfile.route}/$catIndex")
+    this.navigateSingleTopTo("${CatProfile.route}/$catIndex")
 
 fun NavHostController.navigateToAddNewCat() =
-    this.navigateSingleTopTo(AddCat.route)
+    this.navigateSingleTopWithFirstDestinationTo(AddCat.route)
 
 fun NavHostController.navigateToMain() =
-    this.navigateSingleTopTo(Main.route)
+    this.navigateSingleTopWithFirstDestinationTo(Main.route)
 
 fun NavHostController.navigateToColorCategory(colorId: Int?) =
-    colorId?.let { this.navigate("${ColorCategory.route}/$colorId") }
-        ?: this.navigate(ColorCategory.route)
+    colorId?.let { this.navigateSingleTopTo("${ColorCategory.route}/$colorId") }
+        ?: this.navigateSingleTopTo(ColorCategory.route)
